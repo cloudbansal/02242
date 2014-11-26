@@ -1,0 +1,17 @@
+package dk.dtu.imm.pa;
+
+import java.util.Map;
+
+public class CodeLine {
+	private Map<String, Boolean> modifiedVariables;
+	private Map<String, Boolean> usedVariables;
+	private int type;
+	
+	/**
+	 * Returns whether the line statement is the start of a loop
+	 * @return
+	 */
+	public boolean isLoopStart(){
+		return (this.type == TheLangLexer.WHILE);
+	}
+}

@@ -1,0 +1,24 @@
+package dk.dtu.imm.pa;
+
+import java.util.Map;
+
+import org.antlr.runtime.tree.*;
+
+public class CodeLine {
+	private Map<String, Boolean> modifiedVariables;
+	private Map<String, Boolean> usedVariables;
+	private int type;
+	
+	public CodeLine(Tree tree){
+		System.out.println(tree.getLine() + ": " + tree.getText() + " {" + tree.getType() + "}");
+	}
+	
+	/**
+	 * Returns whether the line statement is the start of a loop
+	 * @return
+	 */
+	public boolean isLoopStart(){
+		return (this.type == TheLangLexer.WHILE);
+	}
+	
+}
