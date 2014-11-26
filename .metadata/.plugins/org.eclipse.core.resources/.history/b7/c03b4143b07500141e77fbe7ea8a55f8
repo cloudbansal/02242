@@ -13,16 +13,13 @@ import org.antlr.runtime.tree.*;
 public class CodeLine {
 	private Map<String, String> modifiedVariables;
 	private Map<String, String> usedVariables;
-	private ArrayList<Tree>     elements;
+	private ArrayList<Tree> elements;
 	
-	// Line number
 	private int lineNumber;
+	private int lineType;
 
-	// Looping info and parent CodeLine 
-	// (the one that issued the loop where the current CodeLine is into)
-	private CodeLine loopParent;
 	private boolean isWhileStatement;
-	private boolean isEndOfWhileStatement;
+	private boolean endsWhileStatement;
 
 	/**
 	 * Default constructor
@@ -75,44 +72,19 @@ public class CodeLine {
 			}
 			// Check whether this ends a loop
 			case TheLangLexer.OD:{
-				this.isEndOfWhileStatement = true;
+				this.endsWhileStatement = true;
 				break;
 			}
 		}
-		
-		System.out.println("Added element on line " + element.getLine() + ": " + element.getText() + " {type " + element.getType() + "}");
+		System.out.println("Added element on line " + element.getLine() + ": " + element.getText() + " {" + element.getType() + "}");
 	}
 	
-	public Map<String, String> getModifiedVariables() {
-		return modifiedVariables;
-	}
-
-	public Map<String, String> getUsedVariables() {
-		return usedVariables;
-	}
-
-	public ArrayList<Tree> getElements() {
-		return elements;
-	}
-
-	public int getLineNumber() {
-		return lineNumber;
-	}
-
-	public boolean isWhileStatement() {
-		return isWhileStatement;
-	}
-
-	public boolean isEndOfWhileStatement() {
-		return isEndOfWhileStatement;
-	}
-
-	public CodeLine getLoopParent() {
-		return loopParent;
-	}
-
-	public void setLoopParent(CodeLine loopParent) {
-		this.loopParent = loopParent;
+	/**
+	 * Returns whether the line statement is the start of a loop
+	 * @return true if the line starts a loop
+	 */
+	public boolean isLoopStart(){
+		return (this.elements.get(0).getType() == TheLangLexer.WHILE);
 	}
 	
 }
