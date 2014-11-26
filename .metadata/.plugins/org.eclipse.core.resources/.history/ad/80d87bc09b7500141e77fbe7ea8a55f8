@@ -10,16 +10,12 @@ public class Main {
 
   public static void main(String args[]) throws Exception {
 	// Check for source file to be received as argument
-	
-	String srcFile;
 	if(args.length != 1){
-		srcFile = "samples/sample.lang";
-	} else {
-		srcFile = args[0];
+		
 	}
 	
 	// Parse source file into a tree
-    TheLangLexer lex = new TheLangLexer(new ANTLRFileStream(srcFile));
+    TheLangLexer lex = new TheLangLexer(new ANTLRFileStream(args[0]));
     CommonTokenStream tokens = new CommonTokenStream(lex);
     TheLangParser parser = new TheLangParser(tokens);
     
