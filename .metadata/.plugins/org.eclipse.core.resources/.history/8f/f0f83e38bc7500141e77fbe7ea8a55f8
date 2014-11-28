@@ -1,0 +1,12 @@
+package dk.dtu.imm.pa;
+
+import java.util.ArrayList;
+
+public class Program extends ArrayList<CodeLine> {
+
+	/**
+	 * Default
+	 */
+	private static final long serialVersionUID = 1L;
+	
+}

@@ -1,0 +1,133 @@
+package dk.dtu.imm.pa;
+
+import java.util.ArrayList;
+
+public class Program extends ArrayList<CodeLine> {
+
+	/**
+	 * Default value for serialization
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	private boolean isBuilt;
+
+	public Program(){
+		super();
+		this.isBuilt = false;
+	}
+	
+	/**
+	 * Build the program structure
+	 */
+	public void build(){
+		this.linkLoops();
+		this.linkConditionals();
+		
+		this.isBuilt = true;
+	}
+	
+	/**
+	 * Returns the program, with comments about variable use/modification,
+	 * conditionals, and loop structure.
+	 */
+	public String toString(){
+		if(!this.isBuilt){
+			return "Error: program hasn't been built yet";
+		}
+		StringBuilder programString = new StringBuilder();
+		for(CodeLine codeLine: this){
+			programString.append(codeLine.getLineNumber()+":");
+			programString.append("\t\t");
+			programString.append(codeLine.getElements().toString());
+			programString.append("   is{");
+			programString.append( codeLine.isIfStatement() ?         "if, "    : "");
+			programString.append( codeLine.isElseStatement() ?       "else, "  : "");
+			programString.append( codeLine.isFiStatement() ?         "fi, "    : "");
+			programString.append( codeLine.isWhileStatement() ?      "while, " : "");
+			programString.append( codeLine.isEndOfWhileStatement() ? "od, "    : "");
+			programString.append("}");
+			programString.append("   modifies{");
+			programString.append( codeLine.getModifiedVariables().toString());
+			programString.append("}");
+			programString.append("   uses{");
+			programString.append( codeLine.getUsedVariables().toString());
+			programString.append("}");
+			
+			if(codeLine.getIfParent() != null)
+				programString.append("   ifParentLine: "    + codeLine.getIfParent().getLineNumber());
+			
+			if(codeLine.getEndOfWhileCodeLine() != null)
+				programString.append("   endOfWhileLine: "  + codeLine.getEndOfWhileCodeLine().getLineNumber());
+			
+			if(codeLine.getElseParent() != null)
+				programString.append("   elseParentLine: "  + codeLine.getElseParent().getLineNumber());
+			
+			if(codeLine.getLoopParent() != null)
+				programString.append("   whileParentLine: " + codeLine.getLoopParent().getLineNumber());
+
+			programString.append("\n");
+		}
+		
+		return programString.toString();
+	}
+	
+	/**
+	 * Generate looping structure within the array, with each CodeLine referencing its loop parent
+	 */
+	private void linkLoops(){
+		// State information: parent of the CodeLine (line statement that issued the loop where we are into)
+	    CodeLine loopParentCodeLine = null;
+
+	    // Generate looping structure
+	    for(CodeLine codeLine : this){
+	    	// Set to null, or current parent loop CodeLine 
+	    	codeLine.setLoopParent(loopParentCodeLine);
+	    	
+	    	if(codeLine.isWhileStatement()){
+	    		loopParentCodeLine = codeLine;
+	    	}
+	    	if(codeLine.isEndOfWhileStatement()){
+	    		// Go up one level
+	    		loopParentCodeLine = codeLine.getLoopParent();
+	    		
+	    		// Set end of the while, on the while CodeLine
+	    		codeLine.getLoopParent().setEndOfWhileCodeLine(codeLine);
+	    	}
+	    }
+	}
+	
+	/**
+	 * Generate conditional blocks structure
+	 */
+	private void linkConditionals(){
+		// State information: parent of the CodeLine (line statement that issued the if where we are into)
+	    CodeLine ifParentCodeLine = null;
+	    CodeLine elseParentCodeLine = null;
+
+	    // Generate looping structure
+		for (CodeLine codeLine : this) {
+			// Set to null, or current parents
+			codeLine.setIfParent(ifParentCodeLine);
+			codeLine.setElseParent(elseParentCodeLine);
+
+			if (codeLine.isIfStatement()) {
+				ifParentCodeLine = codeLine;
+				elseParentCodeLine = null;
+			} else if (codeLine.isElseStatement()) {
+				// "else" is in same scope as its corresponding "if"
+				codeLine.setIfParent(ifParentCodeLine.getIfParent());
+				codeLine.setElseParent(ifParentCodeLine.getElseParent());
+
+				elseParentCodeLine = codeLine;
+	    	} else if (codeLine.isFiStatement()) {
+	    		ifParentCodeLine = codeLine.getIfParent();
+	    	    elseParentCodeLine = codeLine.getElseParent();
+			}
+	    }
+	}
+	
+	public boolean isBuilt() {
+		return isBuilt;
+	}
+	
+}

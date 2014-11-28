@@ -1,0 +1,64 @@
+package dk.dtu.imm.pa;
+
+import java.util.ArrayList;
+
+public class Program extends ArrayList<CodeLine> {
+
+	/**
+	 * Default value
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * Generate looping structure within the array, with each CodeLine referencing its loop parent
+	 */
+	public void linkLoops(){
+		// State information: parent of the CodeLine (line statement that issued the loop where we are into)
+	    CodeLine loopParentCodeLine = null;
+
+	    // Generate looping structure
+	    for(CodeLine codeLine : this){
+	    	// Set to null, or current parent loop CodeLine 
+	    	codeLine.setLoopParent(loopParentCodeLine);
+	    	
+	    	if(codeLine.isWhileStatement()){
+	    		loopParentCodeLine = codeLine;
+	    	}
+	    	if(codeLine.isEndOfWhileStatement()){
+	    		// Go up one level
+	    		loopParentCodeLine = codeLine.getLoopParent();
+	    		
+	    		// Set end of the while, on the while CodeLine
+	    		codeLine.getLoopParent().setEndOfWhileCodeLine(codeLine);
+	    	}
+	    }
+	}
+	
+	/**
+	 * Generate conditional blocks structure
+	 */
+	public void linkConditionals(){
+		// State information: parent of the CodeLine (line statement that issued the if where we are into)
+	    CodeLine ifParentCodeLine = null;
+	    CodeLine elseParentCodeLine = null;
+
+	    // Generate looping structure
+		for (CodeLine codeLine : this) {
+			// Set to null, or current parents
+			codeLine.setIfParent(ifParentCodeLine);
+			codeLine.setElseParent(elseParentCodeLine);
+
+			if (codeLine.isIfStatement()) {
+				ifParentCodeLine = codeLine;
+				elseParentCodeLine = null;
+			} else if (codeLine.isElseStatement()) {
+				elseParentCodeLine = codeLine;
+	    	} else if (codeLine.isFiStatement()) {
+	    		ifParentCodeLine = codeLine.getIfParent();
+	    	    elseParentCodeLine = codeLine.getElseParent();
+			}
+	    }
+	}
+	
+	
+}

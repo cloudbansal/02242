@@ -1,0 +1,118 @@
+package dk.dtu.imm.pa;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.antlr.runtime.tree.*;
+
+/**
+ * A CodeLine is the equivalent of a line of code.
+ * It contains a number of elements, that define what the line actually does.
+ */
+public class CodeLine {
+	private Map<String, String> modifiedVariables;
+	private Map<String, String> usedVariables;
+	private ArrayList<Tree>     elements;
+	
+	// Line number
+	private int lineNumber;
+
+	// Looping info and parent CodeLine 
+	// (the one that issued the loop where the current CodeLine is into)
+	private CodeLine loopParent;
+	private boolean isWhileStatement;
+	private boolean isEndOfWhileStatement;
+
+	/**
+	 * Default constructor
+	 */
+	public CodeLine(){
+		modifiedVariables = new HashMap<String, String>();
+		usedVariables     = new HashMap<String, String>();
+		elements          = new ArrayList<Tree>();
+	}
+	
+	/**
+	 * Creates a new CodeLine based on the line number
+	 * @param lineNumber the line number
+	 */
+	public CodeLine(int lineNumber){
+		this();
+		this.lineNumber = lineNumber;
+	}
+	
+	/**
+	 * Adds an element to the line
+	 * @param element the element to be added
+	 */
+	public void addElement(Tree element){
+		elements.add(element);
+		
+		int type = element.getType();
+		
+		switch(type){
+			// Check whether this modifies a variable
+			case TheLangLexer.ASSIGN:{
+				// Previous element is a variable and is modified
+				Tree previousElement = elements.get(elements.size() - 2); // get previously added element
+				modifiedVariables.put(previousElement.getText(), previousElement.getText());
+				break;
+			}
+			// Check whether this uses a variable
+			case TheLangLexer.IDENTIFIER:{
+				// If an identifier is not the first element of the CodeLine,
+				// it represents a variable in use
+				if(elements.size() > 1){
+					usedVariables.put(element.getText(), element.getText());
+				}
+				break;
+			}
+			// Check whether this creates a loop
+			case TheLangLexer.WHILE:{
+				this.isWhileStatement = true;
+				break;
+			}
+			// Check whether this ends a loop
+			case TheLangLexer.OD:{
+				this.isEndOfWhileStatement = true;
+				break;
+			}
+		}
+		
+		System.out.println("Added element on line " + element.getLine() + ": " + element.getText() + " {type " + element.getType() + "}");
+	}
+	
+	public Map<String, String> getModifiedVariables() {
+		return modifiedVariables;
+	}
+
+	public Map<String, String> getUsedVariables() {
+		return usedVariables;
+	}
+
+	public ArrayList<Tree> getElements() {
+		return elements;
+	}
+
+	public int getLineNumber() {
+		return lineNumber;
+	}
+
+	public boolean isWhileStatement() {
+		return isWhileStatement;
+	}
+
+	public boolean isEndOfWhileStatement() {
+		return isEndOfWhileStatement;
+	}
+
+	public CodeLine getLoopParent() {
+		return loopParent;
+	}
+
+	public void setLoopParent(CodeLine loopParent) {
+		this.loopParent = loopParent;
+	}
+	
+}

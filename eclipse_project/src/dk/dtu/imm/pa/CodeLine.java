@@ -1,9 +1,6 @@
 package dk.dtu.imm.pa;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.antlr.runtime.tree.*;
 
 /**
@@ -11,25 +8,34 @@ import org.antlr.runtime.tree.*;
  * It contains a number of elements, that define what the line actually does.
  */
 public class CodeLine {
-	private Map<String, String> modifiedVariables;
-	private Map<String, String> usedVariables;
+	private ArrayList<String> modifiedVariables;
+	private ArrayList<String> usedVariables;
 	private ArrayList<Tree>     elements;
 	
 	// Line number
 	private int lineNumber;
 
-	// Looping info and parent CodeLine 
+	// Looping info and parent CodeLine (and block end, for "while" CodeLines)
 	// (the one that issued the loop where the current CodeLine is into)
 	private CodeLine loopParent;
+	private CodeLine endOfWhileCodeLine;
+	
+	// Conditional block info
+	private CodeLine ifParent;
+	private CodeLine elseParent;
+	
 	private boolean isWhileStatement;
 	private boolean isEndOfWhileStatement;
+	private boolean isIfStatement;
+	private boolean isFiStatement;
+	private boolean isElseStatement;
 
 	/**
 	 * Default constructor
 	 */
 	public CodeLine(){
-		modifiedVariables = new HashMap<String, String>();
-		usedVariables     = new HashMap<String, String>();
+		modifiedVariables = new ArrayList<String>();
+		usedVariables     = new ArrayList<String>();
 		elements          = new ArrayList<Tree>();
 	}
 	
@@ -56,15 +62,26 @@ public class CodeLine {
 			case TheLangLexer.ASSIGN:{
 				// Previous element is a variable and is modified
 				Tree previousElement = elements.get(elements.size() - 2); // get previously added element
-				modifiedVariables.put(previousElement.getText(), previousElement.getText());
+				modifiedVariables.add(previousElement.getText());
 				break;
 			}
-			// Check whether this uses a variable
+			// Check whether this uses/declares a variable
 			case TheLangLexer.IDENTIFIER:{
 				// If an identifier is not the first element of the CodeLine,
-				// it represents a variable in use
-				if(elements.size() == 1){
-					usedVariables.put(element.getText(), element.getText());
+				// and there is no "int" var definition, it represents a variable in use
+				// Otherwise, it modifies (declares) one
+				if(elements.size() > 1){
+					boolean intDeclarationFound = false;
+					
+					for(Tree t : elements)
+						if(t.getType() == TheLangLexer.INT)
+							intDeclarationFound = true;
+					
+					if(intDeclarationFound){
+						modifiedVariables.add(element.getText());
+					} else {
+						usedVariables.add(element.getText());
+					}
 				}
 				break;
 			}
@@ -78,16 +95,31 @@ public class CodeLine {
 				this.isEndOfWhileStatement = true;
 				break;
 			}
+			// Check whether this is an if structure
+			case TheLangLexer.IF:{
+				this.isIfStatement = true;
+				break;
+			}
+			// Check whether this ends if structure
+			case TheLangLexer.FI:{
+				this.isFiStatement = true;
+				break;
+			}
+			// Check whether this is an else structure
+			case TheLangLexer.ELSE:{
+				this.isElseStatement = true;
+				break;
+			}
 		}
 		
 		System.out.println("Added element on line " + element.getLine() + ": " + element.getText() + " {type " + element.getType() + "}");
 	}
 	
-	public Map<String, String> getModifiedVariables() {
+	public ArrayList<String> getModifiedVariables() {
 		return modifiedVariables;
 	}
 
-	public Map<String, String> getUsedVariables() {
+	public ArrayList<String> getUsedVariables() {
 		return usedVariables;
 	}
 
@@ -114,5 +146,44 @@ public class CodeLine {
 	public void setLoopParent(CodeLine loopParent) {
 		this.loopParent = loopParent;
 	}
-	
+
+	public CodeLine getEndOfWhileCodeLine() {
+		return endOfWhileCodeLine;
+	}
+
+	public void setEndOfWhileCodeLine(CodeLine endOfWhileCodeLine) {
+		this.endOfWhileCodeLine = endOfWhileCodeLine;
+	}
+
+	public boolean isIfStatement() {
+		return isIfStatement;
+	}
+
+	public boolean isFiStatement() {
+		return isFiStatement;
+	}
+
+	public boolean isElseStatement() {
+		return isElseStatement;
+	}
+
+	public CodeLine getIfParent() {
+		return ifParent;
+	}
+
+	public void setIfParent(CodeLine ifParent) {
+		this.ifParent = ifParent;
+	}
+
+	public CodeLine getElseParent() {
+		return elseParent;
+	}
+
+	public void setElseParent(CodeLine elseParent) {
+		this.elseParent = elseParent;
+	}
+
+	public boolean isIrrelevantStatement() {
+		return !(this.isWhileStatement || this.isEndOfWhileStatement || this.isIfStatement || this.isFiStatement || this.isElseStatement);
+	}
 }
