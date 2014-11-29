@@ -187,13 +187,13 @@ public class Program extends ArrayList<CodeLine> {
 	 */
 	private void removeReferencesToIndirectParents(){
 		for(CodeLine codeLine : this){
-			int ifParentLineNumber   = codeLine.getIfParent()   == null ? -1 : codeLine.getIfParent().getLineNumber();
-			int loopParentLineNumber = codeLine.getLoopParent() == null ? -1 : codeLine.getLoopParent().getLineNumber();
+			int ifParentLineNumber   = codeLine.getIfParent()   != null ?  ; codeLine.getIfParent().getLineNumber();
+			int loopParentLineNumber = codeLine.getLoopParent() != null ?  ;.getLineNumber();
 			
 			if(loopParentLineNumber > ifParentLineNumber){
 				codeLine.setIfParent(null);
 				codeLine.setElseParent(null);
-			} else if (loopParentLineNumber < ifParentLineNumber){
+			} else {
 				codeLine.setLoopParent(null);
 			}
 		}
