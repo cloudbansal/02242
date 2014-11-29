@@ -31,7 +31,8 @@ public class Program extends ArrayList<CodeLine> {
 		
 		this.parseSourceFile(srcFile);
 		
-		this.linkFlow();
+		this.linkLoops();
+		this.linkConditionals();
 	}
 	
 	/**
@@ -142,28 +143,43 @@ public class Program extends ArrayList<CodeLine> {
 	/**
 	 * Generate looping structure within the array, with each CodeLine referencing its loop parent
 	 */
-	private void linkFlow(){
+	private void linkLoops(){
 		// State information: parent of the CodeLine (line statement that issued the loop where we are into)
 	    CodeLine loopParentCodeLine = null;
-	    CodeLine ifParentCodeLine = null;
-	    CodeLine elseParentCodeLine = null;
 
 	    // Generate looping structure
 	    for(CodeLine codeLine : this){
-	    	// Set to null, or current parents 
+	    	// Set to null, or current parent loop CodeLine 
 	    	codeLine.setLoopParent(loopParentCodeLine);
-	    	codeLine.setIfParent(ifParentCodeLine);
-			codeLine.setElseParent(elseParentCodeLine);
 	    	
 	    	if(codeLine.isWhileStatement()){
 	    		loopParentCodeLine = codeLine;
-	    	} else if(codeLine.isEndOfWhileStatement()){
+	    	}
+	    	if(codeLine.isEndOfWhileStatement()){
 	    		// Go up one level
 	    		loopParentCodeLine = loopParentCodeLine.getLoopParent();
 	    		
 	    		// Set end of the while, on the while CodeLine
 	    		codeLine.getLoopParent().setEndOfWhileCodeLine(codeLine);
-	    	} else if (codeLine.isIfStatement()) {
+	    	}
+	    }
+	}
+	
+	/**
+	 * Generate conditional blocks structure
+	 */
+	private void linkConditionals(){
+		// State information: parent of the CodeLine (line statement that issued the if where we are into)
+	    CodeLine ifParentCodeLine = null;
+	    CodeLine elseParentCodeLine = null;
+
+	    // Generate looping structure
+		for (CodeLine codeLine : this) {
+			// Set to null, or current parents
+			codeLine.setIfParent(ifParentCodeLine);
+			codeLine.setElseParent(elseParentCodeLine);
+
+			if (codeLine.isIfStatement()) {
 				ifParentCodeLine = codeLine;
 				elseParentCodeLine = null;
 			} else if (codeLine.isElseStatement()) {
