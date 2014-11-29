@@ -1,0 +1,19 @@
+program
+    int x;
+    int y;
+    int arr[10];
+    x:=0;
+    y:=200;
+    while (x < 10)
+    do
+        arr[x] = 50;
+        x:=x+1:     
+    od
+    arr[y-1000]:=43;
+    if (arr[arr[y+x]]=1)
+    then
+        x:=1;
+    else
+        x:=0;
+    fi
+end

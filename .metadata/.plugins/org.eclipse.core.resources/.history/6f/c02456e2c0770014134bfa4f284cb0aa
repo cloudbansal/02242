@@ -1,0 +1,22 @@
+package dk.dtu.imm.pa.analyzer.objects;
+
+public class ArrayVariable extends Variable {
+	private final int length;
+	
+	public ArrayVariable(String name, int length) {
+		super(name);
+		
+		this.length = length;
+	}
+
+	public int getLength(){
+		return this.length;
+	}
+	
+	/**
+	 * Return array name when printed, with length
+	 */
+	public String toString(){
+		return this.getName() + "[" + ;
+	}
+}

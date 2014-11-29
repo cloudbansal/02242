@@ -1,0 +1,15 @@
+package dk.dtu.imm.pa.programObjects;
+
+public class ArrayVariable extends Variable {
+	private final int length;
+	
+	public ArrayVariable(String name, int length) {
+		super(name);
+		
+		this.length = length;
+	}
+
+	public int getLength(){
+		return this.length;
+	}
+}

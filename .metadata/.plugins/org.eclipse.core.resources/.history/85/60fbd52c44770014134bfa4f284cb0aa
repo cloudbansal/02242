@@ -1,0 +1,17 @@
+program
+int a;
+int b;
+int c;
+a:=10;
+x := a+b;
+if (a < x) then
+while (a < 15) (* Comment here *) do
+a := a+1;
+od
+else
+b := 10;
+if (a < x) then
+fi 
+fi
+write(a); 
+end

@@ -1,0 +1,5 @@
+package dk.dtu.imm.pa;
+
+public class Variable {
+	private String name;
+}
