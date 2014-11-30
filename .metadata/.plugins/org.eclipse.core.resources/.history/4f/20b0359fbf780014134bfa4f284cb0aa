@@ -421,9 +421,5 @@ public class CodeLine {
 		this.exitIntervalAnalysis = exitIntervalAnalysis;
 	}
 
-	public boolean equals(Object o){
-		return  (o instanceof CodeLine)
-				&&
-				(( (CodeLine) o ).getLineNumber() == this.getLineNumber() );
-	}
+
 }

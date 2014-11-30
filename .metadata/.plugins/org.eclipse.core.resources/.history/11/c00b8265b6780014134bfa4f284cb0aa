@@ -19,12 +19,12 @@ public class CodeLine {
     private VariableStore usedVariables;
     
     // Analysis parameters
-    private ReachingDefinitionsSet entryReachingDefinitions;
-    private ReachingDefinitionsSet exitReachingDefinitions;
-    private DetectionOfSignsSet entryDetectionOfSigns;
-    private DetectionOfSignsSet exitDetectionOfSigns;
-    private IntervalAnalysisSet entryIntervalAnalysis;
-    private IntervalAnalysisSet exitIntervalAnalysis;
+    private ReachingDefinitionsSet initialReachingDefinitions;
+    private ReachingDefinitionsSet finalReachingDefinitions;
+    private DetectionOfSignsSet initialDetectionOfSigns;
+    private DetectionOfSignsSet finalDetectionOfSigns;
+    private IntervalAnalysisSet initialIntervalAnalysis;
+    private IntervalAnalysisSet finalIntervalAnalysis;
     
     private ArrayList<Tree> elements;
     
@@ -371,59 +371,54 @@ public class CodeLine {
 		return sb.toString();
     }
 
-	public ReachingDefinitionsSet getEntryReachingDefinitions() {
-		return entryReachingDefinitions;
+	public ReachingDefinitionsSet getInitialReachingDefinitions() {
+		return initialReachingDefinitions;
 	}
 
-	public void setEntryReachingDefinitions(
-			ReachingDefinitionsSet entryReachingDefinitions) {
-		this.entryReachingDefinitions = entryReachingDefinitions;
+	public void setInitialReachingDefinitions(ReachingDefinitionsSet initialReachingDefinitions) {
+		this.initialReachingDefinitions = initialReachingDefinitions;
 	}
 
-	public ReachingDefinitionsSet getExitReachingDefinitions() {
-		return exitReachingDefinitions;
+	public ReachingDefinitionsSet getFinalReachingDefinitions() {
+		return finalReachingDefinitions;
 	}
 
-	public void setExitReachingDefinitions(
-			ReachingDefinitionsSet exitReachingDefinitions) {
-		this.exitReachingDefinitions = exitReachingDefinitions;
+	public void setFinalReachingDefinitions(ReachingDefinitionsSet finalReachingDefinitions) {
+		this.finalReachingDefinitions = finalReachingDefinitions;
 	}
 
-	public DetectionOfSignsSet getEntryDetectionOfSigns() {
-		return entryDetectionOfSigns;
+	public DetectionOfSignsSet getInitialDetectionOfSigns() {
+		return initialDetectionOfSigns;
 	}
 
-	public void setEntryDetectionOfSigns(DetectionOfSignsSet entryDetectionOfSigns) {
-		this.entryDetectionOfSigns = entryDetectionOfSigns;
+	public void setInitialDetectionOfSigns(
+			DetectionOfSignsSet initialDetectionOfSigns) {
+		this.initialDetectionOfSigns = initialDetectionOfSigns;
 	}
 
-	public DetectionOfSignsSet getExitDetectionOfSigns() {
-		return exitDetectionOfSigns;
+	public DetectionOfSignsSet getFinalDetectionOfSigns() {
+		return finalDetectionOfSigns;
 	}
 
-	public void setExitDetectionOfSigns(DetectionOfSignsSet exitDetectionOfSigns) {
-		this.exitDetectionOfSigns = exitDetectionOfSigns;
+	public void setFinalDetectionOfSigns(DetectionOfSignsSet finalDetectionOfSigns) {
+		this.finalDetectionOfSigns = finalDetectionOfSigns;
 	}
 
-	public IntervalAnalysisSet getEntryIntervalAnalysis() {
-		return entryIntervalAnalysis;
+	public IntervalAnalysisSet getInitialIntervalAnalysis() {
+		return initialIntervalAnalysis;
 	}
 
-	public void setEntryIntervalAnalysis(IntervalAnalysisSet entryIntervalAnalysis) {
-		this.entryIntervalAnalysis = entryIntervalAnalysis;
+	public void setInitialIntervalAnalysis(
+			IntervalAnalysisSet initialIntervalAnalysis) {
+		this.initialIntervalAnalysis = initialIntervalAnalysis;
 	}
 
-	public IntervalAnalysisSet getExitIntervalAnalysis() {
-		return exitIntervalAnalysis;
+	public IntervalAnalysisSet getFinalIntervalAnalysis() {
+		return finalIntervalAnalysis;
 	}
 
-	public void setExitIntervalAnalysis(IntervalAnalysisSet exitIntervalAnalysis) {
-		this.exitIntervalAnalysis = exitIntervalAnalysis;
+	public void setFinalIntervalAnalysis(IntervalAnalysisSet finalIntervalAnalysis) {
+		this.finalIntervalAnalysis = finalIntervalAnalysis;
 	}
 
-	public boolean equals(Object o){
-		return  (o instanceof CodeLine)
-				&&
-				(( (CodeLine) o ).getLineNumber() == this.getLineNumber() );
-	}
 }

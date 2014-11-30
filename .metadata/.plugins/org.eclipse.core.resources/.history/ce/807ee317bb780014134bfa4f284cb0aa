@@ -13,10 +13,6 @@ public class ReachingDefinitionsSet extends ArrayList<ReachingDefinition> {
 		super(rds);
 	}
 	
-	public ReachingDefinitionsSet() {
-		super();
-	}
-
 	public ReachingDefinitionsSet addition(ReachingDefinitionsSet reachingDefinitionsSet){
 		ReachingDefinitionsSet newReachingDefinitionsSet = new ReachingDefinitionsSet(this);
 		

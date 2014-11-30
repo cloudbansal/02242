@@ -81,19 +81,17 @@ public class FlowGraph {
 		ReachingDefinitionsSet kill = new ReachingDefinitionsSet();
 		ReachingDefinitionsSet gen  = new ReachingDefinitionsSet();
 
+		// Calc kill:
 		for(CodeLine tempLabel : this.programLabels){
 			for(Variable v : tempLabel.getModifiedVariables()){
-				kill.add(new ReachingDefinition(v.getName(), l.getLineNumber()));
+				gen.kill(new ReachingDefinition(v.getName(), l.getLineNumber()));
 			}
 		}
 		
+		// Calc gen:
 		for(Variable v : l.getModifiedVariables()){
-			kill.add(new ReachingDefinition(v.getName(), -1));
 			gen.add(new ReachingDefinition(v.getName(), l.getLineNumber()));
 		}
-		
-		result = l.getEntryReachingDefinitions().removal(kill);
-		result = result.addition(gen);
 		
 		return result;
 	}

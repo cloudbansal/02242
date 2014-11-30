@@ -56,46 +56,9 @@ public class FlowGraph {
 		}
 		
 		while(!worklist.isEmpty()){
-			Edge e = worklist.remove(0); // pop!
-			CodeLine label1 = e.getSource();
-			CodeLine label2 = e.getDestination();
 			
-			label1.setExitReachingDefinitions(getRDfromLabel(label1));
-			
-			if( ! label2.getEntryReachingDefinitions().contains(label1.getExitReachingDefinitions())){
-				label2.setEntryReachingDefinitions(label1.getExitReachingDefinitions());
-			}
-			
-			for(Edge f : this.programFlow){
-				if(f.getSource().equals(label2)){
-					worklist.add(f);
-				}
-			}
 		}
 		
-	}
-	
-	private ReachingDefinitionsSet getRDfromLabel(CodeLine l){
-		ReachingDefinitionsSet result = new ReachingDefinitionsSet();
-		
-		ReachingDefinitionsSet kill = new ReachingDefinitionsSet();
-		ReachingDefinitionsSet gen  = new ReachingDefinitionsSet();
-
-		for(CodeLine tempLabel : this.programLabels){
-			for(Variable v : tempLabel.getModifiedVariables()){
-				kill.add(new ReachingDefinition(v.getName(), l.getLineNumber()));
-			}
-		}
-		
-		for(Variable v : l.getModifiedVariables()){
-			kill.add(new ReachingDefinition(v.getName(), -1));
-			gen.add(new ReachingDefinition(v.getName(), l.getLineNumber()));
-		}
-		
-		result = l.getEntryReachingDefinitions().removal(kill);
-		result = result.addition(gen);
-		
-		return result;
 	}
 	
 	private void calculateIntervalAnalysis(){

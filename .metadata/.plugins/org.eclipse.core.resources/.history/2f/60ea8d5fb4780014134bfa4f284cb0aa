@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import org.antlr.runtime.tree.*;
 
-import dk.dtu.imm.pa.analyzer.objects.collections.DetectionOfSignsSet;
-import dk.dtu.imm.pa.analyzer.objects.collections.IntervalAnalysisSet;
 import dk.dtu.imm.pa.analyzer.objects.collections.ReachingDefinitionsSet;
 import dk.dtu.imm.pa.analyzer.parser.TheLangLexer;
 
@@ -19,12 +17,8 @@ public class CodeLine {
     private VariableStore usedVariables;
     
     // Analysis parameters
-    private ReachingDefinitionsSet entryReachingDefinitions;
-    private ReachingDefinitionsSet exitReachingDefinitions;
-    private DetectionOfSignsSet entryDetectionOfSigns;
-    private DetectionOfSignsSet exitDetectionOfSigns;
-    private IntervalAnalysisSet entryIntervalAnalysis;
-    private IntervalAnalysisSet exitIntervalAnalysis;
+    private ReachingDefinitionsSet initialReachingDefinitions;
+    private ReachingDefinitionsSet finalReachingDefinitions;
     
     private ArrayList<Tree> elements;
     
@@ -371,59 +365,19 @@ public class CodeLine {
 		return sb.toString();
     }
 
-	public ReachingDefinitionsSet getEntryReachingDefinitions() {
-		return entryReachingDefinitions;
+	public ReachingDefinitionsSet getInitialReachingDefinitions() {
+		return initialReachingDefinitions;
 	}
 
-	public void setEntryReachingDefinitions(
-			ReachingDefinitionsSet entryReachingDefinitions) {
-		this.entryReachingDefinitions = entryReachingDefinitions;
+	public void setInitialReachingDefinitions(ReachingDefinitionsSet initialReachingDefinitions) {
+		this.initialReachingDefinitions = initialReachingDefinitions;
 	}
 
-	public ReachingDefinitionsSet getExitReachingDefinitions() {
-		return exitReachingDefinitions;
+	public ReachingDefinitionsSet getFinalReachingDefinitions() {
+		return finalReachingDefinitions;
 	}
 
-	public void setExitReachingDefinitions(
-			ReachingDefinitionsSet exitReachingDefinitions) {
-		this.exitReachingDefinitions = exitReachingDefinitions;
-	}
-
-	public DetectionOfSignsSet getEntryDetectionOfSigns() {
-		return entryDetectionOfSigns;
-	}
-
-	public void setEntryDetectionOfSigns(DetectionOfSignsSet entryDetectionOfSigns) {
-		this.entryDetectionOfSigns = entryDetectionOfSigns;
-	}
-
-	public DetectionOfSignsSet getExitDetectionOfSigns() {
-		return exitDetectionOfSigns;
-	}
-
-	public void setExitDetectionOfSigns(DetectionOfSignsSet exitDetectionOfSigns) {
-		this.exitDetectionOfSigns = exitDetectionOfSigns;
-	}
-
-	public IntervalAnalysisSet getEntryIntervalAnalysis() {
-		return entryIntervalAnalysis;
-	}
-
-	public void setEntryIntervalAnalysis(IntervalAnalysisSet entryIntervalAnalysis) {
-		this.entryIntervalAnalysis = entryIntervalAnalysis;
-	}
-
-	public IntervalAnalysisSet getExitIntervalAnalysis() {
-		return exitIntervalAnalysis;
-	}
-
-	public void setExitIntervalAnalysis(IntervalAnalysisSet exitIntervalAnalysis) {
-		this.exitIntervalAnalysis = exitIntervalAnalysis;
-	}
-
-	public boolean equals(Object o){
-		return  (o instanceof CodeLine)
-				&&
-				(( (CodeLine) o ).getLineNumber() == this.getLineNumber() );
+	public void setFinalReachingDefinitions(ReachingDefinitionsSet finalReachingDefinitions) {
+		this.finalReachingDefinitions = finalReachingDefinitions;
 	}
 }

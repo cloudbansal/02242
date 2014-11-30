@@ -37,7 +37,6 @@ public class EdgeSet extends ArrayList<Edge> {
 		return null;
 	}
 	
-	// Ensure blah
 	public boolean add(Edge e){
 		if(!this.contains(e)){
 			super.add(e);
