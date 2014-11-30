@@ -25,7 +25,7 @@ public class FlowGraph {
 		
 		this.calculateReachingDefinitions();
 		
-		System.out.println(this.calculateProgramSlice(programLabels.findByLineNumber(11)));
+		this.calculateProgramSlice(programLabels.findByLineNumber(7));
 		
 		this.calculateIntervalAnalysis();
 		

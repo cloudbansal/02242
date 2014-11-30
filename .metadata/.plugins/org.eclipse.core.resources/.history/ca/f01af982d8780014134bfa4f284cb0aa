@@ -2,9 +2,6 @@ package dk.dtu.imm.pa.analyzer.objects.collections;
 
 import java.util.ArrayList;
 
-import dk.dtu.imm.pa.analyzer.LabelSet;
-import dk.dtu.imm.pa.analyzer.objects.Variable;
-
 public class ReachingDefinitionsSet extends ArrayList<ReachingDefinition> {
 
 	/**
@@ -73,17 +70,4 @@ public class ReachingDefinitionsSet extends ArrayList<ReachingDefinition> {
 	    
 	    return result;
 	}
-	
-	public ArrayList<Integer> getAllLinesOfVariable(Variable v){
-		ArrayList<Integer> result = new ArrayList<Integer>();
-		
-		for(ReachingDefinition rd : this){
-			if(rd.getName().equals(v.getName())){
-				result.add(rd.getLine());
-			}
-		}
-		
-		return result;
-	}
-
 }

@@ -25,7 +25,7 @@ public class FlowGraph {
 		
 		this.calculateReachingDefinitions();
 		
-		System.out.println(this.calculateProgramSlice(programLabels.findByLineNumber(11)));
+		this.calculateProgramSlice(programLabels.findByLineNumber(11));
 		
 		this.calculateIntervalAnalysis();
 		
@@ -65,6 +65,7 @@ public class FlowGraph {
 		}
 		
 		while(!worklist.isEmpty()){
+			System.out.println(worklist);
 			Edge e = worklist.remove(0); // pop!
 			CodeLine label1 = e.getSource();
 			CodeLine label2 = e.getDestination();
@@ -72,6 +73,8 @@ public class FlowGraph {
 			label1.setExitReachingDefinitions(getRDfromLabel(label1));
 			
 			if( ! label2.getEntryReachingDefinitions().contains(label1.getExitReachingDefinitions())){
+				System.out.println(label2.getEntryReachingDefinitions());
+				System.out.println(label1.getExitReachingDefinitions());
 				label2.setEntryReachingDefinitions(label2.getEntryReachingDefinitions().addition(label1.getExitReachingDefinitions()));
 				for(Edge f : this.programFlow){
 					if(f.getSource().equals(label2)){
@@ -119,11 +122,10 @@ public class FlowGraph {
 				
 				if(l.getLoopParent() != null)
 					parentLabel = l.getLoopParent();
-				else if (l.getIfParent() != null)
+				else
 					parentLabel = l.getIfParent();
 					
-				if(parentLabel != null)
-					worklist.add(parentLabel);
+				worklist.add(parentLabel);
 				
 				result.add(l);
 				

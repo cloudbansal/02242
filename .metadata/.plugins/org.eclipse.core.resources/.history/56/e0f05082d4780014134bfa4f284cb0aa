@@ -1,6 +1,5 @@
 package dk.dtu.imm.pa.analyzer;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import dk.dtu.imm.pa.analyzer.objects.CodeLine;
@@ -24,12 +23,6 @@ public class FlowGraph {
 		this.calculateProgramFlow();
 		
 		this.calculateReachingDefinitions();
-		
-		System.out.println(this.calculateProgramSlice(programLabels.findByLineNumber(11)));
-		
-		this.calculateIntervalAnalysis();
-		
-		this.calculateDetectionOfSigns();
 	};
 	
 	public LabelSet getProgramLabels() {
@@ -65,6 +58,7 @@ public class FlowGraph {
 		}
 		
 		while(!worklist.isEmpty()){
+			System.out.println(worklist);
 			Edge e = worklist.remove(0); // pop!
 			CodeLine label1 = e.getSource();
 			CodeLine label2 = e.getDestination();
@@ -72,6 +66,8 @@ public class FlowGraph {
 			label1.setExitReachingDefinitions(getRDfromLabel(label1));
 			
 			if( ! label2.getEntryReachingDefinitions().contains(label1.getExitReachingDefinitions())){
+				System.out.println(label2.getEntryReachingDefinitions());
+				System.out.println(label1.getExitReachingDefinitions());
 				label2.setEntryReachingDefinitions(label2.getEntryReachingDefinitions().addition(label1.getExitReachingDefinitions()));
 				for(Edge f : this.programFlow){
 					if(f.getSource().equals(label2)){
@@ -101,54 +97,6 @@ public class FlowGraph {
 				
 		result = l.getEntryReachingDefinitions().removal(kill);
 		result = result.addition(gen);
-		
-		return result;
-	}
-	
-	private LabelSet calculateProgramSlice(CodeLine labelOfInterest){
-		LabelSet result = new LabelSet();
-		LabelSet worklist = new LabelSet();
-		
-		worklist.add(labelOfInterest);
-		
-		while(!worklist.isEmpty()){
-			CodeLine l = worklist.remove(0);
-			
-			if( ! result.contains(l) ) {
-				CodeLine parentLabel = null;
-				
-				if(l.getLoopParent() != null)
-					parentLabel = l.getLoopParent();
-				else if (l.getIfParent() != null)
-					parentLabel = l.getIfParent();
-					
-				if(parentLabel != null)
-					worklist.add(parentLabel);
-				
-				result.add(l);
-				
-				LabelSet slice = calculateAuxSlice(l);
-				
-				for(CodeLine labelInSlice : slice){
-					if( ! result.contains(labelInSlice)){
-						worklist.add(labelInSlice);
-					}
-				}
-			}
-		}
-		
-		return result;
-	}
-	
-	private LabelSet calculateAuxSlice(CodeLine labelOfInterest){
-		LabelSet result = new LabelSet();
-		
-		for(Variable v : labelOfInterest.getUsedVariables()){
-			ArrayList<Integer> lineNumbers = labelOfInterest.getEntryReachingDefinitions().getAllLinesOfVariable(v);
-			for(int i : lineNumbers){
-				result.add(programLabels.findByLineNumber(i));
-			}
-		}
 		
 		return result;
 	}

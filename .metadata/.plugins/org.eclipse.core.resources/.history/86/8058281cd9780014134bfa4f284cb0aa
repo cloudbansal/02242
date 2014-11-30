@@ -26,12 +26,4 @@ public class LabelSet extends ArrayList<CodeLine> {
 		sb.append("}");
 		return sb.toString();
 	}
-	
-	public CodeLine findByLineNumber(int line){
-		for(CodeLine cl : this){
-			if(cl.getLineNumber() == line)
-				return cl;
-		}
-		return null;
-	}
 }
