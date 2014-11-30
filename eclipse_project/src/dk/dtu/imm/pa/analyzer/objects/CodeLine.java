@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.antlr.runtime.tree.*;
 
+import dk.dtu.imm.pa.analyzer.objects.collections.DetectionOfSignsSet;
+import dk.dtu.imm.pa.analyzer.objects.collections.IntervalAnalysisSet;
 import dk.dtu.imm.pa.analyzer.objects.collections.ReachingDefinitionsSet;
 import dk.dtu.imm.pa.analyzer.parser.TheLangLexer;
 
@@ -19,6 +21,10 @@ public class CodeLine {
     // Analysis parameters
     private ReachingDefinitionsSet initialReachingDefinitions;
     private ReachingDefinitionsSet finalReachingDefinitions;
+    private DetectionOfSignsSet initialDetectionOfSigns;
+    private DetectionOfSignsSet finalDetectionOfSigns;
+    private IntervalAnalysisSet initialIntervalAnalysis;
+    private IntervalAnalysisSet finalIntervalAnalysis;
     
     private ArrayList<Tree> elements;
     
@@ -380,4 +386,39 @@ public class CodeLine {
 	public void setFinalReachingDefinitions(ReachingDefinitionsSet finalReachingDefinitions) {
 		this.finalReachingDefinitions = finalReachingDefinitions;
 	}
+
+	public DetectionOfSignsSet getInitialDetectionOfSigns() {
+		return initialDetectionOfSigns;
+	}
+
+	public void setInitialDetectionOfSigns(
+			DetectionOfSignsSet initialDetectionOfSigns) {
+		this.initialDetectionOfSigns = initialDetectionOfSigns;
+	}
+
+	public DetectionOfSignsSet getFinalDetectionOfSigns() {
+		return finalDetectionOfSigns;
+	}
+
+	public void setFinalDetectionOfSigns(DetectionOfSignsSet finalDetectionOfSigns) {
+		this.finalDetectionOfSigns = finalDetectionOfSigns;
+	}
+
+	public IntervalAnalysisSet getInitialIntervalAnalysis() {
+		return initialIntervalAnalysis;
+	}
+
+	public void setInitialIntervalAnalysis(
+			IntervalAnalysisSet initialIntervalAnalysis) {
+		this.initialIntervalAnalysis = initialIntervalAnalysis;
+	}
+
+	public IntervalAnalysisSet getFinalIntervalAnalysis() {
+		return finalIntervalAnalysis;
+	}
+
+	public void setFinalIntervalAnalysis(IntervalAnalysisSet finalIntervalAnalysis) {
+		this.finalIntervalAnalysis = finalIntervalAnalysis;
+	}
+
 }
