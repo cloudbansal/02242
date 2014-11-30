@@ -29,17 +29,14 @@ public class Main {
 	    System.out.println();
 	    System.out.println(program.toString());
 	    System.out.println();
-	    
-	    FlowGraph fg = new FlowGraph(program);
-	    
 	    System.out.println("Init:");
-	    System.out.println(fg.getInitLabels());
+	    System.out.println(FlowGraph.calculateInitLabels(program));
 	    System.out.println();
 	    System.out.println("Labels:");
-	    System.out.println(fg.getProgramLabels());
+	    System.out.println(FlowGraph.calculateLabels(program));
 	    System.out.println();
 	    System.out.println("Program flow:");
-	    System.out.println(fg.getProgramFlow());
+	    System.out.println(FlowGraph.calculateProgramFlow(program));
 
 	} catch (IOException e) {
 		System.err.println("Error trying to parse source file (" + srcFile + "):");
