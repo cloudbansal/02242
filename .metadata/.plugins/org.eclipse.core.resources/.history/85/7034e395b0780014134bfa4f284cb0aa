@@ -1,0 +1,32 @@
+package dk.dtu.imm.pa.analyzer.objects.collections;
+
+public class Interval {
+	private Double firstElement;
+	private Double lastElement;
+	
+	public Interval(Double firstElement, Double lastElement){
+		this.firstElement = firstElement;
+		this.lastElement  = lastElement;
+	}
+	
+	public boolean equals(Interval i){
+		return (i.getFirstElement() == this.getFirstElement()) && (i.getLastElement() == this.getLastElement());
+	}
+
+	public Double getFirstElement() {
+		return firstElement;
+	}
+
+	public void setFirstElement(Double firstElement) {
+		this.firstElement = firstElement;
+	}
+
+	public Double getLastElement() {
+		return lastElement;
+	}
+
+	public void setLastElement(Double lastElement) {
+		this.lastElement = lastElement;
+	}
+	
+}

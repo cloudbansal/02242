@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.antlr.runtime.tree.*;
 
-import dk.dtu.imm.pa.analyzer.objects.collections.ReachingDefinitionsSet;
 import dk.dtu.imm.pa.analyzer.parser.TheLangLexer;
 
 /**

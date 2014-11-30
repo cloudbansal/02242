@@ -1,0 +1,12 @@
+package dk.dtu.imm.pa.analyzer.objects.collections;
+
+public class Interval {
+	private Integer firstElement;
+	private Integer lastElement;
+	
+	public Interval(Integer firstElement, Integer lastElement){
+		this.firstElement = firstElement;
+		this.lastElement  = lastElement;
+	}
+
+}

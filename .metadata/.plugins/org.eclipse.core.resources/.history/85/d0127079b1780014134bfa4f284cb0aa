@@ -1,0 +1,5 @@
+package dk.dtu.imm.pa.analyzer.objects.collections;
+
+public class IntervalAnalysis {
+
+}

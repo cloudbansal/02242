@@ -1,0 +1,35 @@
+package dk.dtu.imm.pa.analyzer.objects;
+
+import java.util.ArrayList;
+
+public class ReachingDefinitionsSet extends ArrayList<ReachingDefinition> {
+
+	/**
+	 * Default variable for serialization
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	public ReachingDefinitionsSet(ReachingDefinitionsSet rds){
+		super(rds);
+	}
+	
+	public ReachingDefinitionsSet addition(ReachingDefinitionsSet reachingDefinitionsSet){
+		ReachingDefinitionsSet newReachingDefinitionsSet = new ReachingDefinitionsSet(this);
+		
+		for(ReachingDefinition rd: reachingDefinitionsSet){
+			if(! newReachingDefinitionsSet.contains(rd)){
+				newReachingDefinitionsSet.add(rd);
+			}
+		}
+		
+		return newReachingDefinitionsSet;
+	}
+	
+	public ReachingDefinitionsSet removal(ReachingDefinitionsSet reachingDefinitionsSet){
+		ReachingDefinitionsSet newReachingDefinitionsSet = new ReachingDefinitionsSet(this);
+		
+		newReachingDefinitionsSet.removeAll(reachingDefinitionsSet);
+		
+		return newReachingDefinitionsSet;
+	}
+}
