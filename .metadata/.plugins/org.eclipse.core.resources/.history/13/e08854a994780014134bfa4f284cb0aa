@@ -117,7 +117,7 @@ public final class Analyzer {
 				if(program.get(j).isFiStatement()){
 					if(		program.get(j).getIfParent() == elseLabel.getIfParent()
 							&&
-							program.get(j).getElseParent() == elseLabel.getElseParent()) {
+							program.get(j).getIfParent() == elseLabel.getElseParent()) {
 						correspondingFiLabel = program.get(j);
 						break;
 					}

@@ -85,15 +85,15 @@ public final class Analyzer {
 				for(int j = programLabels.size() - 1; j >= 0 ; j--){
 					if(programLabels.get(j).getLineNumber() < currentLabel.getLineNumber()){
 						lastLabelInTrue = programLabels.get(j);
-						break;
 					}
 				}
 				
 				// Connect last line in true block, with first line after else block
 				// it will have same if parent, but marked an else parent
-				CodeLine labelAfterFi = findNextLabelAfterElseBlock(program, programLabels, currentLabel);
+				CodeLine labelAfterFi = findNextLabelAfterElseBlock(program, programLabels, lastLabelInTrue);
 				set.add(new Edge(lastLabelInTrue, labelAfterFi));
 				
+
 			} else if (currentLabel.isWhileStatement()){
 				// connect last line of while blocks with their while
 				set.add(new Edge(currentLabel.getEndOfWhileCodeLine(), currentLabel));
@@ -117,7 +117,7 @@ public final class Analyzer {
 				if(program.get(j).isFiStatement()){
 					if(		program.get(j).getIfParent() == elseLabel.getIfParent()
 							&&
-							program.get(j).getElseParent() == elseLabel.getElseParent()) {
+							program.get(j).getIfParent() == elseLabel.getElseParent()) {
 						correspondingFiLabel = program.get(j);
 						break;
 					}
@@ -127,8 +127,6 @@ public final class Analyzer {
 		
 		// Now traverse down from correspondingFiLabel, and repeat process if Else is found
 		firstLabelAfterFalse = findNextLabelAfterBlock(program, programLabels, correspondingFiLabel);
-		
-		System.out.println(correspondingFiLabel);
 		
 		return firstLabelAfterFalse;
 	}
