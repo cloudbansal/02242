@@ -10,3 +10,5 @@
 1417365282549	Move compilation units
 1417366055237	Delete element
 1417366070053	Delete element
+1417387095277	Encapsulate field 'isReadStatement'
+1417387306947	Encapsulate field 'isAssignmentStatement'

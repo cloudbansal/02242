@@ -3,8 +3,6 @@ package dk.dtu.imm.pa.analyzer;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.antlr.runtime.tree.Tree;
-
 import dk.dtu.imm.pa.analyzer.objects.CodeLine;
 import dk.dtu.imm.pa.analyzer.objects.Program;
 import dk.dtu.imm.pa.analyzer.objects.Variable;
@@ -12,7 +10,6 @@ import dk.dtu.imm.pa.analyzer.objects.collections.DetectionOfSigns;
 import dk.dtu.imm.pa.analyzer.objects.collections.DetectionOfSignsSet;
 import dk.dtu.imm.pa.analyzer.objects.collections.ReachingDefinition;
 import dk.dtu.imm.pa.analyzer.objects.collections.ReachingDefinitionsSet;
-import dk.dtu.imm.pa.analyzer.parser.TheLangLexer;
 
 public class FlowGraph {
 	
@@ -90,55 +87,7 @@ public class FlowGraph {
 	
 	private DetectionOfSignsSet getDSfromLabel(CodeLine l){
 		DetectionOfSignsSet result = new DetectionOfSignsSet();
-		// if variablehasparent  find the parent of block, and get if true or false (always true in while)
-		//                       if we're in the true block, run trueFunction(), and else, falseFunction()
-
-		// Set just contains one modified variable each time
-		Variable modifiedVariable;
 		
-		for(Variable v : l.getModifiedVariables()){
-	        // order (variableName, plus, minus, zero)
-
-			modifiedVariable = v;
-			
-			DetectionOfSignsSet kill = new DetectionOfSignsSet();
-			kill.add(new DetectionOfSigns(v.getName(), true, true, true));
-			
-			if(l.isDeclarationStatement()){ // if var declaration, variable, false, false, true
-				result.add(new DetectionOfSigns(v.getName(), false, false, true));
-			} else if(l.isReadStatement()){ // if read, variable, true, true, true
-				result.add(new DetectionOfSigns(v.getName(), true, true, true));
-			} else if(l.isAssignmentStatement()){
-				// calculate sign of statement
-				ArrayList<Tree> labelElements = l.getElements();
-
-				// if it's just a number on the right side, easy peasy
-				if(l.getUsedVariables().isEmpty()){ // no used variables, but assignment, number
-					// Find number
-					int i;
-					for(i = 0; i < labelElements.size(); i++){
-						if(labelElements.get(i).getType() == TheLangLexer.INTEGER){
-							int number = Integer.parseInt(labelElements.get(i).getText());
-							result.add(new DetectionOfSigns(v.getName(), number > 0, number < 0, number == 0));
-						}
-					}
-				} else {
-					// Find assignment, and parse expression at the right
-					int i;
-					boolean inRightSide = false;
-					for(i = 0; i < labelElements.size(); i++){
-						if(labelElements.get(i).getType() == TheLangLexer.ASSIGN){
-							inRightSide = true;
-							break;
-						}
-						if(inRightSide){
-							if()
-						}
-					}
-				}
-			}		
-		}
-
 		return result;
 	}
 	

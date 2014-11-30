@@ -13,10 +13,6 @@ public class DetectionOfSignsSet extends ArrayList<DetectionOfSigns>{
 		super(detectionOfSignsSet);
 	}
 	
-	public DetectionOfSignsSet() {
-		super();
-	}
-
 	public DetectionOfSignsSet addition(DetectionOfSignsSet detectionOfSignsSet){
 		DetectionOfSignsSet newDetectionOfSignsSet = new DetectionOfSignsSet(this);
 		

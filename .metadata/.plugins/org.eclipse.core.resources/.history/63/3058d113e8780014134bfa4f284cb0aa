@@ -97,12 +97,11 @@ public class FlowGraph {
 		Variable modifiedVariable;
 		
 		for(Variable v : l.getModifiedVariables()){
-	        // order (variableName, plus, minus, zero)
-
 			modifiedVariable = v;
+	        //          order     (variableName, plus, minus, zero)
 			
-			DetectionOfSignsSet kill = new DetectionOfSignsSet();
-			kill.add(new DetectionOfSigns(v.getName(), true, true, true));
+			// if assignment,        variable, calculateSignOfTheRight
+			
 			
 			if(l.isDeclarationStatement()){ // if var declaration, variable, false, false, true
 				result.add(new DetectionOfSigns(v.getName(), false, false, true));
@@ -111,7 +110,9 @@ public class FlowGraph {
 			} else if(l.isAssignmentStatement()){
 				// calculate sign of statement
 				ArrayList<Tree> labelElements = l.getElements();
-
+				
+				
+				
 				// if it's just a number on the right side, easy peasy
 				if(l.getUsedVariables().isEmpty()){ // no used variables, but assignment, number
 					// Find number
@@ -122,23 +123,15 @@ public class FlowGraph {
 							result.add(new DetectionOfSigns(v.getName(), number > 0, number < 0, number == 0));
 						}
 					}
-				} else {
-					// Find assignment, and parse expression at the right
-					int i;
-					boolean inRightSide = false;
-					for(i = 0; i < labelElements.size(); i++){
-						if(labelElements.get(i).getType() == TheLangLexer.ASSIGN){
-							inRightSide = true;
-							break;
-						}
-						if(inRightSide){
-							if()
-						}
-					}
 				}
-			}		
-		}
 
+			}
+			
+		}
+		
+		
+		
+		
 		return result;
 	}
 	

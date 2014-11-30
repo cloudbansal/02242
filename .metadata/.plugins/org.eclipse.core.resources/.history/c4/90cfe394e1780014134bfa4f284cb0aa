@@ -54,8 +54,6 @@ public class CodeLine {
 	private boolean isProgramStatement;
 	private boolean isEndStatement;
 	private boolean isThenStatement;
-	private boolean isReadStatement;
-	private boolean isAssignmentStatement;
 
     /**
      * Default constructor
@@ -93,11 +91,6 @@ public class CodeLine {
         		this.isDeclarationStatement = true;
         		break;
         	}
-        	// Check if it's a read statement;
-        	case TheLangLexer.READ: {
-        		this.setReadStatement(true);
-        		break;
-        	}
         	// Check if this is a program declaration
         	case TheLangLexer.PROGRAM: {
         		this.isProgramStatement = true;
@@ -125,8 +118,6 @@ public class CodeLine {
                 }
                                 	
                 modifiedVariables.add(globalVariables.findByName(elementToAssignTo.getText())); // it must exist, so we find it
-                
-                this.setAssignmentStatement(true);
                 break;
             }
             // Check for array declaration
@@ -308,23 +299,7 @@ public class CodeLine {
         this.elseParent = elseParent;
     }
 
-    public boolean isReadStatement() {
-		return isReadStatement;
-	}
-
-	public boolean isAssignmentStatement() {
-		return isAssignmentStatement;
-	}
-
-	public void setAssignmentStatement(boolean isAssignmentStatement) {
-		this.isAssignmentStatement = isAssignmentStatement;
-	}
-
-	public void setReadStatement(boolean isReadStatement) {
-		this.isReadStatement = isReadStatement;
-	}
-
-	public boolean affectsControlFlow() {
+    public boolean affectsControlFlow() {
         return (this.isWhileStatement || this.isEndOfWhileStatement || this.isIfStatement || this.isFiStatement || this.isElseStatement);
     }
     

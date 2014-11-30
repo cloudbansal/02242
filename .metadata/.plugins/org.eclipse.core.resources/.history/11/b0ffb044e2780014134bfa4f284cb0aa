@@ -55,7 +55,6 @@ public class CodeLine {
 	private boolean isEndStatement;
 	private boolean isThenStatement;
 	private boolean isReadStatement;
-	private boolean isAssignmentStatement;
 
     /**
      * Default constructor
@@ -125,8 +124,6 @@ public class CodeLine {
                 }
                                 	
                 modifiedVariables.add(globalVariables.findByName(elementToAssignTo.getText())); // it must exist, so we find it
-                
-                this.setAssignmentStatement(true);
                 break;
             }
             // Check for array declaration
@@ -310,14 +307,6 @@ public class CodeLine {
 
     public boolean isReadStatement() {
 		return isReadStatement;
-	}
-
-	public boolean isAssignmentStatement() {
-		return isAssignmentStatement;
-	}
-
-	public void setAssignmentStatement(boolean isAssignmentStatement) {
-		this.isAssignmentStatement = isAssignmentStatement;
 	}
 
 	public void setReadStatement(boolean isReadStatement) {
