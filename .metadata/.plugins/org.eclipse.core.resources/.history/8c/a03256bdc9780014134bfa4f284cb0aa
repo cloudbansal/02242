@@ -51,7 +51,7 @@ public class FlowGraph {
 			l.setExitReachingDefinitions(new ReachingDefinitionsSet());
 			
 			if(this.initLabels.contains(l)){
-				for(Variable v: l.getGlobalVariables()){
+				for(Variable v: l.getModifiedVariables()){
 					l.getEntryReachingDefinitions().add(new ReachingDefinition(v.getName(), -1 ));
 				}
 			}
@@ -82,9 +82,10 @@ public class FlowGraph {
 		
 		ReachingDefinitionsSet kill = new ReachingDefinitionsSet();
 		ReachingDefinitionsSet gen  = new ReachingDefinitionsSet();
-		for(Variable v : l.getModifiedVariables()){
-			for(CodeLine tempLabel : this.programLabels){
-				kill.add(new ReachingDefinition(v.getName(), tempLabel.getLineNumber()));
+
+		for(CodeLine tempLabel : this.programLabels){
+			for(Variable v : tempLabel.getModifiedVariables()){
+				kill.add(new ReachingDefinition(v.getName(), l.getLineNumber()));
 			}
 		}
 		
@@ -92,7 +93,7 @@ public class FlowGraph {
 			kill.add(new ReachingDefinition(v.getName(), -1));
 			gen.add(new ReachingDefinition(v.getName(), l.getLineNumber()));
 		}
-				
+		
 		result = l.getEntryReachingDefinitions().removal(kill);
 		result = result.addition(gen);
 		
@@ -225,7 +226,9 @@ public class FlowGraph {
 		
 		// Now traverse down from correspondingFiLabel, and repeat process if Else is found
 		firstLabelAfterFalse = findNextLabelAfterBlock(correspondingFiLabel);
-				
+		
+		System.out.println(correspondingFiLabel);
+		
 		return firstLabelAfterFalse;
 	}
 	

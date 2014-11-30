@@ -92,7 +92,10 @@ public class FlowGraph {
 			kill.add(new ReachingDefinition(v.getName(), -1));
 			gen.add(new ReachingDefinition(v.getName(), l.getLineNumber()));
 		}
-				
+		
+		System.out.println("kill:" + kill);
+		System.out.println("gen" + gen);
+		
 		result = l.getEntryReachingDefinitions().removal(kill);
 		result = result.addition(gen);
 		
@@ -225,7 +228,9 @@ public class FlowGraph {
 		
 		// Now traverse down from correspondingFiLabel, and repeat process if Else is found
 		firstLabelAfterFalse = findNextLabelAfterBlock(correspondingFiLabel);
-				
+		
+		System.out.println(correspondingFiLabel);
+		
 		return firstLabelAfterFalse;
 	}
 	

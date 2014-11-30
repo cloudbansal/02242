@@ -32,6 +32,10 @@ public class ReachingDefinitionsSet extends ArrayList<ReachingDefinition> {
 	public ReachingDefinitionsSet removal(ReachingDefinitionsSet reachingDefinitionsSet){
 		ReachingDefinitionsSet newReachingDefinitionsSet = new ReachingDefinitionsSet(this);
 		
+		for(ReachingDefinition rd : this){
+			
+		}
+		
 		newReachingDefinitionsSet.removeAll(reachingDefinitionsSet);
 		
 		return newReachingDefinitionsSet;
@@ -53,7 +57,7 @@ public class ReachingDefinitionsSet extends ArrayList<ReachingDefinition> {
         for(ReachingDefinition rd : rds){
             if(!this.contains(rd)){
                 result = false;
-            }
+            }// TODO
         }
         
         return result;

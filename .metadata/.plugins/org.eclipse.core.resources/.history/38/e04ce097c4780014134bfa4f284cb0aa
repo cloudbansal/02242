@@ -51,14 +51,13 @@ public class FlowGraph {
 			l.setExitReachingDefinitions(new ReachingDefinitionsSet());
 			
 			if(this.initLabels.contains(l)){
-				for(Variable v: l.getGlobalVariables()){
+				for(Variable v: l.getModifiedVariables()){
 					l.getEntryReachingDefinitions().add(new ReachingDefinition(v.getName(), -1 ));
 				}
 			}
 		}
 		
 		while(!worklist.isEmpty()){
-			
 			Edge e = worklist.remove(0); // pop!
 			CodeLine label1 = e.getSource();
 			CodeLine label2 = e.getDestination();
@@ -67,10 +66,11 @@ public class FlowGraph {
 			
 			if( ! label2.getEntryReachingDefinitions().contains(label1.getExitReachingDefinitions())){
 				label2.setEntryReachingDefinitions(label1.getExitReachingDefinitions());
-				for(Edge f : this.programFlow){
-					if(f.getSource().equals(label2)){
-						worklist.add(f);
-					}
+			}
+			
+			for(Edge f : this.programFlow){
+				if(f.getSource().equals(label2)){
+					worklist.add(f);
 				}
 			}
 		}
@@ -82,9 +82,10 @@ public class FlowGraph {
 		
 		ReachingDefinitionsSet kill = new ReachingDefinitionsSet();
 		ReachingDefinitionsSet gen  = new ReachingDefinitionsSet();
-		for(Variable v : l.getModifiedVariables()){
-			for(CodeLine tempLabel : this.programLabels){
-				kill.add(new ReachingDefinition(v.getName(), tempLabel.getLineNumber()));
+
+		for(CodeLine tempLabel : this.programLabels){
+			for(Variable v : tempLabel.getModifiedVariables()){
+				kill.add(new ReachingDefinition(v.getName(), l.getLineNumber()));
 			}
 		}
 		
@@ -92,7 +93,7 @@ public class FlowGraph {
 			kill.add(new ReachingDefinition(v.getName(), -1));
 			gen.add(new ReachingDefinition(v.getName(), l.getLineNumber()));
 		}
-				
+		
 		result = l.getEntryReachingDefinitions().removal(kill);
 		result = result.addition(gen);
 		
@@ -225,7 +226,9 @@ public class FlowGraph {
 		
 		// Now traverse down from correspondingFiLabel, and repeat process if Else is found
 		firstLabelAfterFalse = findNextLabelAfterBlock(correspondingFiLabel);
-				
+		
+		System.out.println(correspondingFiLabel);
+		
 		return firstLabelAfterFalse;
 	}
 	

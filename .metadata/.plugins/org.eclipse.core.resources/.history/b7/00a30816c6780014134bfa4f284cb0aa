@@ -46,28 +46,4 @@ public class ReachingDefinitionsSet extends ArrayList<ReachingDefinition> {
 		result += "}";
 		return result;
 	}
-	
-	public boolean contains(ReachingDefinitionsSet rds){
-        boolean result = true;
-        
-        for(ReachingDefinition rd : rds){
-            if(!this.contains(rd)){
-                result = false;
-            }
-        }
-        
-        return result;
-    }
-    
-	public boolean contains(ReachingDefinition rd){
-	    boolean result = false;
-	    
-	    for(ReachingDefinition ourRd : this){
-	        if(ourRd.equals(rd)){
-	            result = true;
-	        }
-	    }
-	    
-	    return result;
-	}
 }

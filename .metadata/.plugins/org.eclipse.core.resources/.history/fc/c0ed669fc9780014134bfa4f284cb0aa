@@ -421,10 +421,6 @@ public class CodeLine {
 		this.exitIntervalAnalysis = exitIntervalAnalysis;
 	}
 
-	public VariableStore getGlobalVariables() {
-		return globalVariables;
-	}
-
 	public boolean equals(Object o){
 		return  (o instanceof CodeLine)
 				&&
