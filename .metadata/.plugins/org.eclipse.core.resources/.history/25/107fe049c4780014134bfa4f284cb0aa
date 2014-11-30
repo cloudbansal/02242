@@ -36,14 +36,4 @@ public class ReachingDefinitionsSet extends ArrayList<ReachingDefinition> {
 		
 		return newReachingDefinitionsSet;
 	}
-	
-	public String toString(){
-		String result = "{";
-		for(ReachingDefinition rd : this){
-			result += rd.toString();
-			result += ", ";
-		}
-		result += "}";
-		return result;
-	}
 }

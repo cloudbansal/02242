@@ -21,8 +21,6 @@ public class FlowGraph {
 		this.calculateLabels();
 		this.calculateInitLabels();
 		this.calculateProgramFlow();
-		
-		this.calculateReachingDefinitions();
 	};
 	
 	public LabelSet getProgramLabels() {

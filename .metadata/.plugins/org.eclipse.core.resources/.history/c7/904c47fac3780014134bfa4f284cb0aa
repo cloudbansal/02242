@@ -32,8 +32,4 @@ public class ReachingDefinition {
 	public void setLine(int line) {
 		this.line = line;
 	}
-	
-	public String toString(){
-		return "(" + this.name + ", " + this.line + ")";
-	}
 }

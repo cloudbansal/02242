@@ -3,7 +3,6 @@ package dk.dtu.imm.pa;
 import java.io.IOException;
 
 import dk.dtu.imm.pa.analyzer.FlowGraph;
-import dk.dtu.imm.pa.analyzer.objects.CodeLine;
 import dk.dtu.imm.pa.analyzer.objects.Program;
 
 /**
@@ -41,12 +40,6 @@ public class Main {
 	    System.out.println();
 	    System.out.println("Program flow:");
 	    System.out.println(fg.getProgramFlow());
-	    System.out.println();
-	    System.out.println("Entry reaching definitions set, per label:");
-	    for(CodeLine cl : program){
-	    	System.out.println("entry: " + cl.getEntryReachingDefinitions() + " - exit: " + cl.getExitReachingDefinitions());
-	    }
-
 
 	} catch (IOException e) {
 		System.err.println("Error trying to parse source file (" + srcFile + "):");
