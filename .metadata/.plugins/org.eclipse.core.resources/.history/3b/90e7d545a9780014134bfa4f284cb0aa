@@ -1,0 +1,41 @@
+package dk.dtu.imm.pa.analyzer.objects;
+
+import java.util.ArrayList;
+
+public class DetectionOfSignsSet extends ArrayList<DetectionOfSigns>{
+	
+	public boolean contains(DetectionOfSignsSet detectionOfSignsSet){
+		boolean result = false;
+		
+		for(DetectionOfSigns ds: detectionOfSignsSet ){
+			result &= this.contains(ds);
+		}
+		
+		return result;
+	}
+	
+	public boolean contains(DetectionOfSigns detectionOfSigns){
+		boolean result = false;
+		
+		boolean bothContainPlus  = false;
+		boolean bothContainMinus = false;
+		boolean bothContainZero  = false;
+		
+		for(DetectionOfSigns ds : this ){
+			if(detectionOfSigns.getName().equals(ds.getName())){
+				bothContainPlus  = detectionOfSigns.isPlus()  && ds.isPlus();
+				bothContainMinus = detectionOfSigns.isMinus() && ds.isMinus();
+				bothContainZero  = detectionOfSigns.isZero()  && ds.isZero();
+				
+				bothContainPlus  = bothContainPlus  == detectionOfSigns.isPlus();
+				bothContainMinus = bothContainMinus == detectionOfSigns.isMinus();
+				bothContainZero  = bothContainZero  == detectionOfSigns.isZero();
+			}
+		}
+		
+		result = bothContainPlus && bothContainMinus && bothContainZero;
+		
+		return result;
+	}
+	
+}

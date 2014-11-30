@@ -2,19 +2,19 @@ package dk.dtu.imm.pa.analyzer.objects;
 
 public class Variable {
 	private final String name;
-	private final int line;
+	private final int lineWhereDeclared;
 	
-	public Variable(int line, String name){
+	public Variable(int lineWhereDeclared, String name){
 		this.name = name;
-		this.line = line;
+		this.lineWhereDeclared = lineWhereDeclared;
 	}
 	
 	public String getName(){
 		return this.name;
 	}
 	
-	public int getLine(){
-		return this.line;
+	public int getLineWhereDeclared(){
+		return this.lineWhereDeclared;
 	}
 	
 	/**

@@ -363,20 +363,4 @@ public class CodeLine {
 		
 		return sb.toString();
     }
-
-	public ReachingDefinitionsSet getInitialReachingDefinitions() {
-		return initialReachingDefinitions;
-	}
-
-	public void setInitialReachingDefinitions(ReachingDefinitionsSet initialReachingDefinitions) {
-		this.initialReachingDefinitions = initialReachingDefinitions;
-	}
-
-	public ReachingDefinitionsSet getFinalReachingDefinitions() {
-		return finalReachingDefinitions;
-	}
-
-	public void setFinalReachingDefinitions(ReachingDefinitionsSet finalReachingDefinitions) {
-		this.finalReachingDefinitions = finalReachingDefinitions;
-	}
 }

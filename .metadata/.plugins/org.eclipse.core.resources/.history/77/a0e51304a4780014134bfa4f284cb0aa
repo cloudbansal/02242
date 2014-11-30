@@ -1,0 +1,19 @@
+package dk.dtu.imm.pa.analyzer.objects;
+
+public class ReachingDefinition {
+	private String name;
+	private int line;
+	
+	public ReachingDefinition(String name, int line){
+		this.name = name;
+		this.line = line;
+	}
+	
+	public boolean equals(Object o){
+		return  (o instanceof ReachingDefinition)
+				&&
+				( (ReachingDefinition) o ).getName().equals(this.getName())
+				&&
+				( (ReachingDefinition) o ).getLine().equals(this.getLine());
+	}
+}

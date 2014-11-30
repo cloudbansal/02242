@@ -15,10 +15,6 @@ public class CodeLine {
     private VariableStore modifiedVariables;
     private VariableStore usedVariables;
     
-    // Analysis parameters
-    private ReachingDefinitionsSet initialReachingDefinitions;
-    private ReachingDefinitionsSet finalReachingDefinitions;
-    
     private ArrayList<Tree> elements;
     
     // Line number
@@ -363,20 +359,4 @@ public class CodeLine {
 		
 		return sb.toString();
     }
-
-	public ReachingDefinitionsSet getInitialReachingDefinitions() {
-		return initialReachingDefinitions;
-	}
-
-	public void setInitialReachingDefinitions(ReachingDefinitionsSet initialReachingDefinitions) {
-		this.initialReachingDefinitions = initialReachingDefinitions;
-	}
-
-	public ReachingDefinitionsSet getFinalReachingDefinitions() {
-		return finalReachingDefinitions;
-	}
-
-	public void setFinalReachingDefinitions(ReachingDefinitionsSet finalReachingDefinitions) {
-		this.finalReachingDefinitions = finalReachingDefinitions;
-	}
 }

@@ -1,0 +1,55 @@
+package dk.dtu.imm.pa.analyzer.objects;
+
+public class DetectionOfSigns {
+	private String name;
+	private boolean plus;
+	private boolean minus;
+	private boolean zero;	
+
+	public DetectionOfSigns(String name, boolean plus, boolean minus, boolean zero) {
+		super();
+		this.name = name;
+		this.plus = plus;
+		this.minus = minus;
+		this.zero = zero;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public boolean isPlus() {
+		return plus;
+	}
+
+	public void setPlus(boolean plus) {
+		this.plus = plus;
+	}
+
+	public boolean isMinus() {
+		return minus;
+	}
+
+	public void setMinus(boolean minus) {
+		this.minus = minus;
+	}
+
+	public boolean isZero() {
+		return zero;
+	}
+
+	public void setZero(boolean zero) {
+		this.zero = zero;
+	}
+	
+	public void add(DetectionOfSigns detectionOfSigns){
+		this.plus  = this.plus  && detectionOfSigns.isPlus();
+		this.minus = this.minus && detectionOfSigns.isMinus();
+		this.zero  = this.zero  && detectionOfSigns.isZero();
+	}
+
+}
