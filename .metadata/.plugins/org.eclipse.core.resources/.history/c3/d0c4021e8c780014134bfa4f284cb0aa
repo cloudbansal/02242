@@ -1,0 +1,163 @@
+package dk.dtu.imm.pa.analyzer;
+
+import java.util.Iterator;
+
+import dk.dtu.imm.pa.analyzer.objects.CodeLine;
+import dk.dtu.imm.pa.analyzer.objects.Program;
+
+public final class Analyzer {
+	// Only static methods are provided here
+	private Analyzer(){};
+	
+	public static LabelSet calculateLabels(Program program){
+		LabelSet set = new LabelSet();
+		
+		for(CodeLine label : program){
+			if( ! (
+					label.isFiStatement()
+					|| ( label.isThenStatement() && ! label.isIfStatement() )
+					|| label.isElseStatement()
+					|| label.isEndOfWhileStatement()
+					|| label.isProgramStatement()
+					|| label.isEndStatement()
+					)
+				){
+				set.add(label);
+			}
+		}
+		
+		return set;
+	}
+	
+	public static LabelSet calculateInitLabels(Program program) {
+		LabelSet set = new LabelSet();
+		
+		for(CodeLine label : program){
+			if(label.isDeclarationStatement()){
+				set.add(label);
+			}
+		}
+		
+		return set;
+	}
+	
+	public static EdgeSet calculateProgramFlow(Program program){
+		EdgeSet set = new EdgeSet();
+		
+		// Traverse labels
+		LabelSet programLabels = calculateLabels(program);
+				
+		CodeLine currentLabel = null;
+		CodeLine nextLabel    = null;
+		
+		for (Iterator<CodeLine> it = programLabels.iterator(); it.hasNext();){
+			if(currentLabel == null) {
+				currentLabel = it.next();
+				nextLabel    = it.next();
+			} else {
+				currentLabel = nextLabel;
+				nextLabel    = it.next();
+			}
+			
+			// connecting all labels forward by default
+			
+			// unless they're divided by an else statement
+			if((currentLabel.getIfParent() == nextLabel.getIfParent()) && (currentLabel.getElseParent() != currentLabel.getElseParent())){
+				continue;
+			// unless they're disconnected after a while block
+			} else if (!currentLabel.isWhileStatement() && (currentLabel.getLoopParent() != nextLabel.getLoopParent())){
+				continue;
+			} else {
+				set.add(new Edge(currentLabel, nextLabel));
+			}
+	    }
+		
+		// Traverse whole program
+		for (int i = 0; i < program.size(); i++){
+			currentLabel = program.get(i);
+						
+			if(currentLabel.isElseStatement()){				
+				// Connect 'if', with first line in else block
+				CodeLine followingLabel = program.get(i+1);
+				set.add(new Edge(followingLabel.getIfParent(), followingLabel));						
+				
+				CodeLine lastLabelInTrue = null;
+				for(int j = programLabels.size() - 1; j >= 0 ; j--){
+					if(programLabels.get(j).getLineNumber() < currentLabel.getLineNumber()){
+						lastLabelInTrue = programLabels.get(j);
+					}
+				}
+				
+				// Connect last line in true block, with first line after else block
+				// it will have same if parent, but marked an else parent
+				CodeLine labelAfterFi = findNextLabelAfterElseBlock(program, programLabels, currentLabel);
+				set.add(new Edge(lastLabelInTrue, labelAfterFi));
+				
+
+			} else if (currentLabel.isWhileStatement()){
+				// connect last line of while blocks with their while
+				set.add(new Edge(currentLabel.getEndOfWhileCodeLine(), currentLabel));
+				
+				CodeLine endOfWhile = currentLabel.getEndOfWhileCodeLine();
+
+//				// Disconnect last line in while block
+//				for (int j = 0; i < programLabels.size(); j++){
+//					if(programLabels.get(j).getLineNumber() > endOfWhile.getLineNumber()){
+//						set.remove(new Edge(programLabels.get(j-1), programLabels.get(j)));
+//						break;
+//					}
+//				}
+				
+				// Connect while, with first line after while block
+				set.add(new Edge(currentLabel, findNextLabelAfterBlock(program, programLabels, endOfWhile)));
+			}
+	    }
+		
+		
+		return set;
+	}
+	
+	private static CodeLine findNextLabelAfterElseBlock(Program program, LabelSet programLabels, CodeLine elseLabel){
+		CodeLine firstLabelAfterFalse = null;
+		CodeLine correspondingFiLabel = null;
+		for(int j = 0; j<program.size(); j++){
+			if(program.get(j).getLineNumber() > elseLabel.getLineNumber()){
+				if(program.get(j).isFiStatement()){
+					if(		program.get(j).getIfParent() == elseLabel.getIfParent()
+							&&
+							program.get(j).getIfParent() == elseLabel.getElseParent()) {
+						correspondingFiLabel = program.get(j);
+						break;
+					}
+				}
+			}
+		}
+		
+		// Now traverse down from correspondingFiLabel, and repeat process if Else is found
+		firstLabelAfterFalse = findNextLabelAfterBlock(program, programLabels, correspondingFiLabel);
+		
+		return firstLabelAfterFalse;
+	}
+	
+	private static CodeLine findNextLabelAfterBlock(Program program, LabelSet programLabels, CodeLine endBlockLabel){
+		if(endBlockLabel == null){
+			return null;
+		}
+		
+		int startLine = endBlockLabel.getLineNumber();
+		CodeLine nextLabelAfterBlock = null;
+		
+		for(int j = 0; j<program.size(); j++){
+			CodeLine current = program.get(j);
+			if(current.getLineNumber() > startLine){
+				if(current.isElseStatement()){
+					return findNextLabelAfterElseBlock(program, programLabels, current);
+				} else if (programLabels.contains(current)){
+					return current;
+				}
+			}
+		}
+		
+		return nextLabelAfterBlock;
+	}
+}

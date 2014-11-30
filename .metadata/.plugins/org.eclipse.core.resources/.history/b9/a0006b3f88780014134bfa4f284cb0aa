@@ -1,0 +1,140 @@
+package dk.dtu.imm.pa.analyzer;
+
+import java.util.Iterator;
+
+import dk.dtu.imm.pa.analyzer.objects.CodeLine;
+import dk.dtu.imm.pa.analyzer.objects.Program;
+
+public final class Analyzer {
+	// Only static methods are provided here
+	private Analyzer(){};
+	
+	public static LabelSet calculateLabels(Program program){
+		LabelSet set = new LabelSet();
+		
+		for(CodeLine label : program){
+			if( ! (
+					label.isFiStatement()
+					|| ( label.isThenStatement() && ! label.isIfStatement() )
+					|| label.isElseStatement()
+					|| label.isEndOfWhileStatement()
+					|| label.isProgramStatement()
+					|| label.isEndStatement()
+					)
+				){
+				set.add(label);
+			}
+		}
+		
+		return set;
+	}
+	
+	public static LabelSet calculateInitLabels(Program program) {
+		LabelSet set = new LabelSet();
+		
+		for(CodeLine label : program){
+			if(label.isDeclarationStatement()){
+				set.add(label);
+			}
+		}
+		
+		return set;
+	}
+	
+	public static EdgeSet calculateProgramFlow(Program program){
+		EdgeSet set = new EdgeSet();
+		
+		// Traverse labels
+		LabelSet programLabels = calculateLabels(program);
+				
+		CodeLine currentLabel = null;
+		CodeLine nextLabel    = null;
+		
+		for (Iterator<CodeLine> it = programLabels.iterator(); it.hasNext();){
+			if(currentLabel == null) {
+				currentLabel = it.next();
+				nextLabel    = it.next();
+			} else {
+				currentLabel = nextLabel;
+				nextLabel    = it.next();
+			}
+			
+			// connecting all labels forward by default
+			set.add(new Edge(currentLabel, nextLabel));
+	    }
+		
+		// Traverse whole program
+		for (int i = 0; i < program.size(); i++){
+			currentLabel = program.get(i);
+						
+			if(currentLabel.isElseStatement()){				
+				// Connect 'if', with first line in else block
+				CodeLine followingLabel = program.get(i+1);
+				set.add(new Edge(followingLabel.getIfParent(), followingLabel));
+				
+				// TODO Disconnect last line in true block, with first in else block
+				
+				
+				// TODO Connect last line in true block, with first line after else block
+				// it will have same if parent, but marked an else parent
+				CodeLine lastLabelInTrue = null;
+				for(int j = programLabels.size() - 1; j >= 0 ; j--){
+					if(programLabels.get(j).getLineNumber() < currentLabel.getLineNumber()){
+						lastLabelInTrue = programLabels.get(j);
+					}
+				}
+				
+				
+
+
+			} else if (currentLabel.isWhileStatement()){
+				// connect last line of while blocks with their while
+				set.add(new Edge(currentLabel.getEndOfWhileCodeLine(), currentLabel));
+				
+				// Disconnect last line in while block
+				CodeLine endOfWhile = currentLabel.getEndOfWhileCodeLine();
+				for (int j = 0; i < programLabels.size(); j++){
+					if(programLabels.get(j).getLineNumber() > endOfWhile.getLineNumber()){
+						set.remove(new Edge(programLabels.get(j-1), programLabels.get(j)));
+						break;
+					}
+				}
+				
+				// TODO Connect while, with first line after while block
+				// if it's not an else afterwards, connect directly
+				set.add(new Edge(currentLabel, findNextEdgeAfterBlock(program, programLabels, endOfWhile.getLineNumber())));
+				
+				
+				
+			}
+	    }
+		
+		
+		return set;
+	}
+	
+	private static CodeLine findNextLabelAfterElseBlock(Program program, LabelSet programLabels, CodeLine elseLabel){
+		CodeLine firstLabelAfterFalse = null;
+		CodeLine correspondingFiLabel = null;
+		for(int j = 0; j<programLabels.size(); j++){
+			if(programLabels.get(j).getLineNumber() > elseLabel.getLineNumber()){
+				if(programLabels.get(j).isFiStatement()){
+					if(		programLabels.get(j).getIfParent() == elseLabel.getIfParent()
+							&&
+							programLabels.get(j).getIfParent() == elseLabel.getElseParent()) {
+						correspondingFiLabel = programLabels.get(j);
+						break;
+					}
+				}
+			}
+		}
+		
+		// Now traverse down from correspondingFiLabel, and repeat process if Else is found
+		
+		return firstLabelAfterFalse;
+	}
+	
+	private static CodeLine findNextEdgeAfterBlock(Program program, LabelSet programLabels, CodeLine endBlockLabel){
+
+	}
+}

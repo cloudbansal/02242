@@ -1,7 +1,7 @@
 package dk.dtu.imm.pa.analyzer.objects;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -12,7 +12,7 @@ import org.antlr.runtime.tree.Tree;
 import dk.dtu.imm.pa.analyzer.parser.TheLangLexer;
 import dk.dtu.imm.pa.analyzer.parser.TheLangParser;
 
-public class Program extends ArrayList<CodeLine> {
+public class Program extends LinkedList<CodeLine> {
 	
 	private VariableStore globalVariables = new VariableStore();
 
@@ -94,47 +94,7 @@ public class Program extends ArrayList<CodeLine> {
 	public String toString(){
 		StringBuilder programString = new StringBuilder();
 		for(CodeLine codeLine: this){
-			programString.append(codeLine.getLineNumber()+":");
-			
-			programString.append("\t\t");
-			
-			programString.append(codeLine.getElements().toString());
-			
-			if(codeLine.affectsControlFlow()){
-				programString.append("   is{");
-				programString.append( codeLine.isIfStatement() ?         "if, "    : "");
-				programString.append( codeLine.isElseStatement() ?       "else, "  : "");
-				programString.append( codeLine.isFiStatement() ?         "fi, "    : "");
-				programString.append( codeLine.isWhileStatement() ?      "while, " : "");
-				programString.append( codeLine.isEndOfWhileStatement() ? "od, "    : "");
-				programString.append("}");
-			}
-			
-			if(!codeLine.getModifiedVariables().isEmpty()){
-				programString.append("   modifies{");
-				programString.append( codeLine.getModifiedVariables().toString());
-				programString.append("}");
-			}
-			
-			if(!codeLine.getUsedVariables().isEmpty()){
-				programString.append("   uses{");
-				programString.append( codeLine.getUsedVariables().toString());
-				programString.append("}");
-			}
-			
-			if(codeLine.getIfParent() != null)
-				programString.append("   ifParentLine: "    + codeLine.getIfParent().getLineNumber());
-			
-			if(codeLine.getEndOfWhileCodeLine() != null)
-				programString.append("   endOfWhileLine: "  + codeLine.getEndOfWhileCodeLine().getLineNumber());
-			
-			if(codeLine.getElseParent() != null)
-				programString.append("   elseParentLine: "  + codeLine.getElseParent().getLineNumber());
-			
-			if(codeLine.getLoopParent() != null)
-				programString.append("   whileParentLine: " + codeLine.getLoopParent().getLineNumber());
-
-			programString.append("\n");
+			programString.append(codeLine.toString());
 		}
 		
 		return programString.toString();
@@ -148,23 +108,39 @@ public class Program extends ArrayList<CodeLine> {
 	    CodeLine loopParentCodeLine = null;
 	    CodeLine ifParentCodeLine = null;
 	    CodeLine elseParentCodeLine = null;
-
+	    
+	    // Keeping track of stack level
+	    int stackLevel = 0;
+	    
 	    // Generate looping structure
 	    for(CodeLine codeLine : this){
 	    	// Set to null, or current parents 
 	    	codeLine.setLoopParent(loopParentCodeLine);
 	    	codeLine.setIfParent(ifParentCodeLine);
 			codeLine.setElseParent(elseParentCodeLine);
+			
+			codeLine.setStackLevel(stackLevel);
 	    	
 	    	if(codeLine.isWhileStatement()){
+	    		stackLevel++;
+	    		
 	    		loopParentCodeLine = codeLine;
+	    		
 	    	} else if(codeLine.isEndOfWhileStatement()){
+	    		stackLevel--;
+	    		codeLine.setStackLevel(stackLevel);
+	    		
 	    		// Go up one level
 	    		loopParentCodeLine = loopParentCodeLine.getLoopParent();
 	    		
 	    		// Set end of the while, on the while CodeLine
-	    		codeLine.getLoopParent().setEndOfWhileCodeLine(codeLine);
+	    		codeLine.getLoopParent().setEndOfWhileCodeLine(this.get(codeLine.getLineNumber() - 2));
+	    		
+	    		// End of while is already out of the loop
+	    		codeLine.setLoopParent(loopParentCodeLine);
 	    	} else if (codeLine.isIfStatement()) {
+	    		stackLevel++;
+	    		
 				ifParentCodeLine = codeLine;
 				elseParentCodeLine = null;
 			} else if (codeLine.isElseStatement()) {
@@ -173,7 +149,13 @@ public class Program extends ArrayList<CodeLine> {
 				codeLine.setElseParent(ifParentCodeLine.getElseParent());
 
 				elseParentCodeLine = codeLine;
+				
+				codeLine.setStackLevel(stackLevel - 1);
 	    	} else if (codeLine.isFiStatement()) {
+	    		stackLevel--;
+	    		codeLine.setStackLevel(stackLevel);
+	    		codeLine.setBeginningOfIfInFi(ifParentCodeLine);
+	    		
 	    		ifParentCodeLine = ifParentCodeLine.getIfParent();
 	    	    elseParentCodeLine = elseParentCodeLine.getElseParent();
 	    	    codeLine.setIfParent(ifParentCodeLine);

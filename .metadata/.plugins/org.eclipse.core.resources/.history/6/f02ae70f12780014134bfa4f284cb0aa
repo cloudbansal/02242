@@ -1,0 +1,138 @@
+package dk.dtu.imm.pa.analyzer;
+
+import java.util.Iterator;
+
+import dk.dtu.imm.pa.analyzer.objects.CodeLine;
+import dk.dtu.imm.pa.analyzer.objects.Program;
+
+public final class Analyzer {
+	// Only static methods are provided here
+	private Analyzer(){};
+	
+	public static LabelSet calculateLabels(Program program){
+		LabelSet set = new LabelSet();
+		
+		for(CodeLine label : program){
+			if( ! (
+					label.isFiStatement()
+					|| label.isThenStatement()
+					|| label.isElseStatement()
+					|| label.isEndOfWhileStatement()
+					|| label.isProgramStatement()
+					|| label.isEndStatement()
+					)
+				){
+				set.add(label);
+			}
+		}
+		
+		return set;
+	}
+	
+	public static LabelSet calculateInitLabels(Program program) {
+		LabelSet set = new LabelSet();
+		
+		for(CodeLine label : program){
+			if(label.isDeclarationStatement()){
+				set.add(label);
+			}
+		}
+		
+		return set;
+	}
+	
+	public static EdgeSet calculateProgramFlow(Program program){
+		EdgeSet set = new EdgeSet();
+		
+		// Traverse labels
+		LabelSet programLabels = calculateLabels(program);
+				
+		CodeLine currentLabel = null;
+		CodeLine nextLabel    = null;
+		
+		for (Iterator<CodeLine> it = programLabels.iterator(); it.hasNext();){
+			if(currentLabel == null) {
+				currentLabel = it.next();
+				nextLabel    = it.next();
+			} else {
+				currentLabel = nextLabel;
+				nextLabel    = it.next();
+			}
+			
+			if(currentLabel.isWhileStatement()){
+				// connect last line of while blocks with their while
+				set.add(new Edge(currentLabel.getEndOfWhileCodeLine(), currentLabel));	
+				
+			} else {
+				// connecting all labels forward by default
+				set.add(new Edge(currentLabel, nextLabel));
+			}
+	    }
+		
+		// keep stack level to return to correct stack
+		int stackLevel = 0;
+		CodeLine endOfBlock = null;
+
+		
+		// Traverse whole program
+		for (int i = 0; i < program.size(); i++){
+			currentLabel = program.get(i);
+			
+			
+			if(currentLabel.isElseStatement()){
+				// Disconnect last line in true block, with first in else block
+				set.remove(findEdgeAroundElse(currentLabel, programLabels));
+				
+				// Connect if, with first line in else block
+				CodeLine followingLabel = program.get(i+1);
+				set.add(new Edge(followingLabel.getIfParent(), followingLabel));
+			} else if (currentLabel.isWhileStatement()){
+				stackLevel++;
+			} else if (currentLabel.isIfStatement()){
+				stackLevel++;
+			} else if (currentLabel.isEndOfWhileStatement()){
+				stackLevel--;
+			} else if (currentLabel.isFiStatement()){
+				stackLevel--;
+			} else {
+				if(endOfBlock!=null){
+					
+					endOfBlock = null;
+				}
+			}
+	    }
+
+		// TODO Connect while, with first line after while block
+		// TODO Connect last line in true block, with first line after else block
+		return set;
+	}
+	
+	
+	/**
+	 * Finds the edge to be removed from the true block to the else block
+	 * @param elseLine the line where the else is found
+	 * @param programLabels the set of the program labels
+	 * @return
+	 */
+	private static Edge findEdgeAroundElse(CodeLine elseLine, LabelSet programLabels){
+		CodeLine currentLabel = null;
+		CodeLine nextLabel    = null;
+		Edge result           = null;
+		
+		for (Iterator<CodeLine> it = programLabels.iterator(); it.hasNext();){
+			if(currentLabel == null) {
+				currentLabel = it.next();
+				nextLabel    = it.next();
+			} else {
+				currentLabel = nextLabel;
+				nextLabel    = it.next();
+			}
+			
+			if(nextLabel.getLineNumber() > elseLine.getLineNumber()){
+				result = new Edge(currentLabel, nextLabel);
+			}
+		}
+		
+		return result;
+	}
+}

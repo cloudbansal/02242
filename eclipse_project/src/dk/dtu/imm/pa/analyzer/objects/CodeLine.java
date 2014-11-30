@@ -20,6 +20,9 @@ public class CodeLine {
     // Line number
     private int lineNumber;
     
+    // Stack level
+    private int stackLevel;
+    
     // Looping info and parent CodeLine (and block end, for "while" CodeLines)
     // (the one that issued the loop where the current CodeLine is into)
     private CodeLine loopParent;
@@ -28,12 +31,18 @@ public class CodeLine {
     // Conditional block info
     private CodeLine ifParent;
     private CodeLine elseParent;
+    private CodeLine beginningOfIfInFi;
+
     
     private boolean isWhileStatement;
     private boolean isEndOfWhileStatement;
     private boolean isIfStatement;
     private boolean isFiStatement;
     private boolean isElseStatement;
+    private boolean isDeclarationStatement;
+	private boolean isProgramStatement;
+	private boolean isEndStatement;
+	private boolean isThenStatement;
 
     /**
      * Default constructor
@@ -66,6 +75,26 @@ public class CodeLine {
         int type = element.getType();
         
         switch(type){
+        	// Check if this is a variable declaration
+        	case TheLangLexer.INT: {
+        		this.isDeclarationStatement = true;
+        		break;
+        	}
+        	// Check if this is a program declaration
+        	case TheLangLexer.PROGRAM: {
+        		this.isProgramStatement = true;
+        		break;
+        	}
+        	// Check if this is ending the program
+        	case TheLangLexer.END: {
+        		this.isEndStatement = true;
+        		break;
+        	}
+        	// Check if this is a then keyword
+        	case TheLangLexer.THEN: {
+        		this.isThenStatement = true;
+        		break;
+        	}
             // Check whether this modifies a variable
             case TheLangLexer.ASSIGN:{
                 Tree elementToAssignTo = elements.get(elements.size()-2);
@@ -226,6 +255,22 @@ public class CodeLine {
     public boolean isElseStatement() {
         return isElseStatement;
     }
+    
+    public boolean isDeclarationStatement() {
+        return isDeclarationStatement;
+    }
+    
+    public boolean isProgramStatement() {
+		return isProgramStatement;
+	}
+
+	public boolean isEndStatement() {
+		return isEndStatement;
+	}
+
+	public boolean isThenStatement() {
+		return isThenStatement;
+	}
 
     public CodeLine getIfParent() {
         return ifParent;
@@ -245,5 +290,73 @@ public class CodeLine {
 
     public boolean affectsControlFlow() {
         return (this.isWhileStatement || this.isEndOfWhileStatement || this.isIfStatement || this.isFiStatement || this.isElseStatement);
+    }
+    
+    public int getStackLevel() {
+		return stackLevel;
+	}
+
+	public void setStackLevel(int stackLevel) {
+		this.stackLevel = stackLevel;
+	}
+
+	public CodeLine getBeginningOfIfInFi() {
+		return beginningOfIfInFi;
+	}
+
+	public void setBeginningOfIfInFi(CodeLine beginningOfIfInFi) {
+		this.beginningOfIfInFi = beginningOfIfInFi;
+	}
+
+	public String toString(){
+    	StringBuilder sb = new StringBuilder();
+    	
+    	sb.append(this.getLineNumber()+":");
+		
+		sb.append("\t");
+		
+		for(int i = 0; i < this.stackLevel; i++){
+			sb.append("\t");
+		}
+		
+		sb.append(this.getElements().toString());
+		
+		if(this.affectsControlFlow()){
+			sb.append("   is{");
+			sb.append( this.isIfStatement() ?         "if, "    : "");
+			sb.append( this.isElseStatement() ?       "else, "  : "");
+			sb.append( this.isFiStatement() ?         "fi, "    : "");
+			sb.append( this.isWhileStatement() ?      "while, " : "");
+			sb.append( this.isEndOfWhileStatement() ? "od, "    : "");
+			sb.append("}");
+		}
+		
+		if(!this.getModifiedVariables().isEmpty()){
+			sb.append("   modifies{");
+			sb.append( this.getModifiedVariables().toString());
+			sb.append("}");
+		}
+		
+		if(!this.getUsedVariables().isEmpty()){
+			sb.append("   uses{");
+			sb.append( this.getUsedVariables().toString());
+			sb.append("}");
+		}
+		
+		if(this.getIfParent() != null)
+			sb.append("   ifParentLine: "    + this.getIfParent().getLineNumber());
+		
+		if(this.getEndOfWhileCodeLine() != null)
+			sb.append("   endOfWhileLine: "  + this.getEndOfWhileCodeLine().getLineNumber());
+		
+		if(this.getElseParent() != null)
+			sb.append("   elseParentLine: "  + this.getElseParent().getLineNumber());
+		
+		if(this.getLoopParent() != null)
+			sb.append("   whileParentLine: " + this.getLoopParent().getLineNumber());
+
+		sb.append("\n");
+		
+		return sb.toString();
     }
 }

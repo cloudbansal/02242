@@ -1,0 +1,25 @@
+package dk.dtu.imm.pa.analyzer;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class EdgeSet extends ArrayList<Edge> {
+	/**
+	 * Default value for serialization
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+   
+	    for (Iterator<Edge> it = this.iterator(); it.hasNext();){
+	    	sb.append(it.next().toString());
+	    	if(it.hasNext()){
+	    		sb.append(", ");
+	    	}
+	    }
+	    
+		sb.append("}");
+		return sb.toString();
+	}
+}

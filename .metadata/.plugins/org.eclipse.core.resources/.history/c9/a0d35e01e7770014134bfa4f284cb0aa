@@ -1,0 +1,13 @@
+package dk.dtu.imm.pa.analyzer;
+
+import java.util.ArrayList;
+
+import dk.dtu.imm.pa.analyzer.objects.CodeLine;
+
+public class LabelSet extends ArrayList<CodeLine> {
+	/**
+	 * Default value for serialization
+	 */
+	private static final long serialVersionUID = 1L;
+	
+}

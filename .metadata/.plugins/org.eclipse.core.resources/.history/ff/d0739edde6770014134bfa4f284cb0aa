@@ -1,0 +1,9 @@
+package dk.dtu.imm.pa.analyzer;
+
+import java.util.ArrayList;
+
+import dk.dtu.imm.pa.analyzer.objects.CodeLine;
+
+public class LabelSet extends ArrayList<CodeLine> {
+
+}

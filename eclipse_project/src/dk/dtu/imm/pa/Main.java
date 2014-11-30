@@ -2,6 +2,7 @@ package dk.dtu.imm.pa;
 
 import java.io.IOException;
 
+import dk.dtu.imm.pa.analyzer.Analyzer;
 import dk.dtu.imm.pa.analyzer.objects.Program;
 
 /**
@@ -14,7 +15,7 @@ public class Main {
 	// Check for source file to be received as argument
 	String srcFile;
 	if(args.length != 1){
-		srcFile = "samples/benchmark.lang";
+		srcFile = "samples/nestedStructures.lang";
 	} else {
 		srcFile = args[0];
 	}
@@ -27,6 +28,16 @@ public class Main {
 	    // Print program
 	    System.out.println();
 	    System.out.println(program.toString());
+	    System.out.println();
+	    System.out.println("Init:");
+	    System.out.println(Analyzer.calculateInitLabels(program));
+	    System.out.println();
+	    System.out.println("Labels:");
+	    System.out.println(Analyzer.calculateLabels(program));
+	    System.out.println();
+	    System.out.println("Program flow:");
+	    System.out.println(Analyzer.calculateProgramFlow(program));
+
 	} catch (IOException e) {
 		System.err.println("Error trying to parse source file (" + srcFile + "):");
 		System.err.println(e.getMessage());

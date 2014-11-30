@@ -1,0 +1,14 @@
+package dk.dtu.imm.pa.analyzer;
+
+import dk.dtu.imm.pa.analyzer.objects.Program;
+
+public final class Analyzer {
+	// Only static methods are provided here
+	private Analyzer(){};
+	
+	public static String calculateProgramFlow(Program program){
+		StringBuilder sb = new StringBuilder();
+		
+		return sb.toString();
+	}
+}

@@ -1,0 +1,118 @@
+package dk.dtu.imm.pa.analyzer;
+
+import java.util.Iterator;
+
+import dk.dtu.imm.pa.analyzer.objects.CodeLine;
+import dk.dtu.imm.pa.analyzer.objects.Program;
+
+public final class Analyzer {
+	// Only static methods are provided here
+	private Analyzer(){};
+	
+	public static LabelSet calculateLabels(Program program){
+		LabelSet set = new LabelSet();
+		
+		for(CodeLine label : program){
+			if( ! (
+					label.isFiStatement()
+					|| label.isThenStatement()
+					|| label.isProgramStatement()
+					|| label.isEndStatement()
+					)
+				){
+				set.add(label);
+			}
+		}
+		
+		return set;
+	}
+	
+	public static LabelSet calculateInitLabels(Program program) {
+		LabelSet set = new LabelSet();
+		
+		for(CodeLine label : program){
+			if(label.isDeclarationStatement()){
+				set.add(label);
+			}
+		}
+		
+		return set;
+	}
+	
+	public static EdgeSet calculateProgramFlow(Program program){
+		EdgeSet set = new EdgeSet();
+
+		
+		// Traverse forward
+		CodeLine currentCodeLine = null;
+		CodeLine nextCodeLine = null;
+		
+		for (Iterator<CodeLine> it = program.iterator(); it.hasNext();){
+			if(currentCodeLine == null) {
+				currentCodeLine = it.next();
+				nextCodeLine    = it.next();
+			} else {
+				currentCodeLine = nextCodeLine;
+				nextCodeLine = it.next();
+			}
+			
+			if(currentCodeLine.isIfStatement()){
+				// TODO Connect the if with the first label in the true block
+				
+				// TODO Connect the if with the first label in the else block
+				
+			} else if (currentCodeLine.isElseStatement()) {
+				// TODO Connect the previous label with the one after the "fi"
+				
+			} else if (currentCodeLine.isFiStatement()) {
+				// TODO Connect the previous label with the one after the "fi"
+				
+			}else if (currentCodeLine.isWhileStatement()) {
+				// Connect the end of the while with the while declaration
+				set.add(new Edge(currentCodeLine.getEndOfWhileCodeLine(), currentCodeLine));
+				// TODO Connect the while with its first label
+			}
+	    }
+		
+		// Traverse backwards
+		currentCodeLine = null;
+		nextCodeLine = null;
+
+//		for( int i = program.size() - 1; i >= 0; i-- ){
+//			currentCodeLine = program.get(i);
+//			
+//			if(currentCodeLine.isIfStatement()){
+//				// TODO Connect the if with the first label in the true block
+//				
+//				// TODO Connect the if with the first label in the else block
+//				
+//			} else if (currentCodeLine.isElseStatement()) {
+//				// TODO Connect the previous label with the one after the "fi"
+//				
+//			} else if (currentCodeLine.isFiStatement()) {
+//				// TODO Connect the previous label with the one after the "fi"
+//				
+//			} else if (currentCodeLine.isWhileStatement()) {
+//				set.add(new Edge(currentCodeLine.getEndOfWhileCodeLine(), currentCodeLine));
+//			} else if (currentCodeLine.isWhileStatement()) {
+//
+//			} else { // label is not control flow
+//				nextCodeLine = program.get(i-1);
+//				if(nextCodeLine.isIfStatement()){
+//					
+//				} else if (nextCodeLine.isElseStatement()) {
+//					
+//				} else if (nextCodeLine.isFiStatement()) {
+//					
+//				}else if (nextCodeLine.isWhileStatement()) {
+//					
+//				} else {
+//					
+//				}
+//			}
+//			
+//		}
+		
+		return set;
+	}
+}

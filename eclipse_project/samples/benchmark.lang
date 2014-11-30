@@ -16,4 +16,5 @@ program
     else
         x:=0;
     fi
+    y:=x-1;
 end

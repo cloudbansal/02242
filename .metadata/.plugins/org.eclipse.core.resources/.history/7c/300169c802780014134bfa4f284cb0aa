@@ -1,0 +1,88 @@
+package dk.dtu.imm.pa.analyzer;
+
+import java.util.Iterator;
+
+import dk.dtu.imm.pa.analyzer.objects.CodeLine;
+import dk.dtu.imm.pa.analyzer.objects.Program;
+
+public final class Analyzer {
+	// Only static methods are provided here
+	private Analyzer(){};
+	
+	public static LabelSet calculateLabels(Program program){
+		LabelSet set = new LabelSet();
+		
+		for(CodeLine label : program){
+			if( ! (
+					label.isFiStatement()
+					|| label.isThenStatement()
+					|| label.isElseStatement()
+					|| label.isProgramStatement()
+					|| label.isEndStatement()
+					)
+				){
+				set.add(label);
+			}
+		}
+		
+		return set;
+	}
+	
+	public static LabelSet calculateInitLabels(Program program) {
+		LabelSet set = new LabelSet();
+		
+		for(CodeLine label : program){
+			if(label.isDeclarationStatement()){
+				set.add(label);
+			}
+		}
+		
+		return set;
+	}
+	
+	public static EdgeSet calculateProgramFlow(Program program){
+		EdgeSet set = new EdgeSet();
+		
+		// Traverse labels forward, 
+		LabelSet programLabels = calculateLabels(program);
+				
+		CodeLine currentLabel = null;
+		CodeLine nextLabel    = null;
+		
+		for (Iterator<CodeLine> it = programLabels.iterator(); it.hasNext();){
+			if(currentLabel == null) {
+				currentLabel = it.next();
+				nextLabel    = it.next();
+			} else {
+				currentLabel = nextLabel;
+				nextLabel    = it.next();
+			}
+			
+			
+
+			if(currentLabel.isWhileStatement()){
+				// connect last line of while blocks with their while
+				set.add(new Edge(currentLabel.getEndOfWhileCodeLine(), currentLabel));	
+			} else if(currentLabel.isEndOfWhileStatement()) {
+				
+			} else {
+				// connecting all labels forward by default
+				set.add(new Edge(currentLabel, nextLabel));
+			}
+	    }
+		
+		currentLabel = null;
+		nextLabel    = null;
+		
+		for (int i = program.size() - 1; i >= 0; i--){
+//			currentLabel = 
+//			set.remove(new Edge(currentLabel, nextLabel));
+	    }
+
+		// Connect while, with first line after while block
+		
+		// Disconnect last line in true block, with first in else block
+		// Connect if, with first line in else block
+		return set;
+	}
+}

@@ -1,0 +1,65 @@
+package dk.dtu.imm.pa.analyzer;
+
+import java.util.Iterator;
+
+import dk.dtu.imm.pa.analyzer.objects.CodeLine;
+import dk.dtu.imm.pa.analyzer.objects.Program;
+
+public final class Analyzer {
+	// Only static methods are provided here
+	private Analyzer(){};
+	
+	public static LabelSet calculateLabels(Program program){
+		LabelSet set = new LabelSet();
+		
+		for(CodeLine label : program){
+			if( ! (
+					label.isFiStatement()
+					|| label.isThenStatement()
+					|| label.isProgramStatement()
+					|| label.isEndStatement()
+					)
+				){
+				set.add(label);
+			}
+		}
+		
+		return set;
+	}
+	
+	public static LabelSet calculateInitLabels(Program program) {
+		LabelSet set = new LabelSet();
+		
+		for(CodeLine label : program){
+			if(label.isDeclarationStatement()){
+				set.add(label);
+			}
+		}
+		
+		return set;
+	}
+	
+	public static EdgeSet calculateProgramFlow(Program program){
+		EdgeSet set = new EdgeSet();
+		
+		// Traverse forward, connecting all labels forward
+		LabelSet programLabels = calculateLabels(program);
+				
+		CodeLine currentLabel = null;
+		CodeLine nextLabel    = null;
+		
+		for (Iterator<CodeLine> it = programLabels.iterator(); it.hasNext();){
+			if(currentLabel == null) {
+				currentLabel = it.next();
+				nextLabel    = it.next();
+			} else {
+				currentLabel = nextLabel;
+				nextLabel    = it.next();
+			}
+			set.add(new Edge(currentLabel, nextLabel));
+	    }
+		
+		// Disconnect
+		return set;
+	}
+}
