@@ -1,0 +1,34 @@
+package dk.dtu.imm.pa.analyzer.objects.collections;
+
+import java.util.ArrayList;
+
+public class IntervalAnalysisSet extends ArrayList<IntervalAnalysis> {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	public boolean contains(IntervalAnalysisSet ias){
+		boolean result = false;
+		
+		for(IntervalAnalysis ia : ias){
+			result &= this.contains(ia);
+		}
+		
+		return result;
+	}
+	
+	public boolean contains(IntervalAnalysis ia){
+		boolean result = false;
+		
+		for(IntervalAnalysis ourIa : this){
+			if(ourIa.contains(ia)){
+				result = true;
+			}
+		}
+		
+		return result;
+	}
+	
+}

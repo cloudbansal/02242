@@ -39,21 +39,13 @@ public class IntervalAnalysisSet extends ArrayList<IntervalAnalysis> {
 	
 	public IntervalAnalysisSet addition(IntervalAnalysisSet ias){
 		IntervalAnalysisSet newIntervalAnalysisSet = new IntervalAnalysisSet(this);
-		
-		for (IntervalAnalysis ia : ias){
-			this.add(ia);
-		}
-		
+		System.err.println("Not implemented"); // TODO
 		return newIntervalAnalysisSet;
 	}
 	
 	public IntervalAnalysisSet removal(IntervalAnalysisSet ias){
 		IntervalAnalysisSet newIntervalAnalysisSet = new IntervalAnalysisSet(this);
-		
-		for (IntervalAnalysis ia : ias){
-			this.remove(this.getByName(ia.getName()));
-		}
-		
+		System.err.println("Not implemented"); // TODO
 		return newIntervalAnalysisSet;
 	}
 	
