@@ -2,6 +2,8 @@ package dk.dtu.imm.pa.analyzer.objects.collections;
 
 import java.util.ArrayList;
 
+import dk.dtu.imm.pa.analyzer.objects.CodeLine;
+
 public class DetectionOfSignsSet extends ArrayList<DetectionOfSigns>{
 	
 	/**
@@ -22,6 +24,7 @@ public class DetectionOfSignsSet extends ArrayList<DetectionOfSigns>{
 		for(DetectionOfSigns ds : detectionOfSignsSet) {
 			if(newDetectionOfSignsSet.containsVariableName(ds.getName())){
 				newDetectionOfSignsSet.getByVariableName(ds.getName()).add(ds);
+				
 			} else {
 				
 				newDetectionOfSignsSet.add(ds);
