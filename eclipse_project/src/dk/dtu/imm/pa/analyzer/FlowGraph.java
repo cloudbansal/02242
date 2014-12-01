@@ -186,18 +186,12 @@ public class FlowGraph {
             CodeLine label1 = e.getSource();
             CodeLine label2 = e.getDestination();
             
-//            System.out.println("Entry"+label2.getLineNumber()+":"+label2.getEntryDetectionOfSigns());
-//            System.out.println("Exit"+label2.getLineNumber()+":"+label2.getExitDetectionOfSigns());
             label1.setExitDetectionOfSigns(getDSfromLabel(label1));
-//            System.out.println("Entry"+label1.getLineNumber()+":"+label1.getEntryDetectionOfSigns());
-//            System.out.println("Exit"+label1.getLineNumber()+":"+label1.getExitDetectionOfSigns());
            
            
             if( ! label2.getEntryDetectionOfSigns().contains(label1.getExitDetectionOfSigns())){
-//            	System.out.println("Exit"+label1.getLineNumber()+" is not equal to Entry"+label2.getLineNumber());
             	
             	label2.setEntryDetectionOfSigns(label2.getEntryDetectionOfSigns().addition(label1.getExitDetectionOfSigns()));
-//            	System.out.println("New Entry"+label2.getLineNumber()+":"+label2.getEntryDetectionOfSigns());
                 for(Edge f : this.programFlow){
                     if(f.getSource().equals(label2)){
                         worklist.add(f);
@@ -299,10 +293,6 @@ public class FlowGraph {
 						
 						switch(operatorType){
 							case TheLangLexer.PLUS:{
-//								System.out.println(nameOfVariable1);
-//								System.out.println(dos1);
-//								System.out.println(nameOfVariable2);
-//								System.out.println(dos2);
 								DetectionOfSigns dos = new DetectionOfSigns(v.getName(),
 										(dos1.isPlus()||dos2.isPlus())
 										,(dos1.isMinus()||dos2.isMinus()),
@@ -347,13 +337,8 @@ public class FlowGraph {
 			}		
 		}
 		
-//		System.out.println("Exit "+l.getLineNumber()+" is: "+result);
 		result = result.removal(kill);
-//		System.out.println("KIll "+l.getLineNumber()+" is: "+kill);
-//		System.out.println("Result "+l.getLineNumber()+" after removal of kill is: "+result);
 		result = result.addition(gen);
-//		System.out.println("Gen "+l.getLineNumber()+" is: "+gen);
-//		System.out.println("Result "+l.getLineNumber()+" after addition of gen is: "+result);
 		return result;
 	}
 	
