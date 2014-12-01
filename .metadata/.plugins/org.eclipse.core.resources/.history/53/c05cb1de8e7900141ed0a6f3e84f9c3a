@@ -8,7 +8,6 @@ import org.antlr.runtime.tree.Tree;
 import dk.dtu.imm.pa.analyzer.objects.CodeLine;
 import dk.dtu.imm.pa.analyzer.objects.Program;
 import dk.dtu.imm.pa.analyzer.objects.Variable;
-import dk.dtu.imm.pa.analyzer.objects.ArrayUse;
 import dk.dtu.imm.pa.analyzer.objects.collections.DetectionOfSigns;
 import dk.dtu.imm.pa.analyzer.objects.collections.DetectionOfSignsSet;
 import dk.dtu.imm.pa.analyzer.objects.collections.ReachingDefinition;
@@ -30,8 +29,6 @@ public class FlowGraph {
 		this.calculateProgramFlow();
 		
 		this.calculateReachingDefinitions();
-		
-		this.generateArrayUsage();
 				
 //		this.calculateDetectionOfSigns();
 		
@@ -53,40 +50,6 @@ public class FlowGraph {
 
 	public EdgeSet getProgramFlow() {
 		return programFlow;
-	}
-	
-	
-	public void generateArrayUsage(){
-		for(Variable v: program.getGlobalVariables()){
-			if(v.isArray()){
-				for(CodeLine l : programLabels){
-					if(l.getModifiedVariables().contains(v) || l.getUsedVariables().contains(v)){
-						for(int i = 0; i < l.getElements().size(); i++){
-							Tree element = l.getElements().get(i);
-							if(element.getType() == TheLangLexer.LBRACKET){
-								if(l.getElements().get(i-1).getText().equals(v.getName())){
-									ArrayUse arrayUse = new ArrayUse(l);
-									if(l.getElements().get(i+1).getType() == TheLangLexer.INTEGER){
-										arrayUse.setIntIndex(Integer.parseInt(l.getElements().get(i+1).getText()));
-									} else {
-										arrayUse.setVarIndex(program.getGlobalVariables().findByName(l.getElements().get(i+1).getText()));
-									}
-									
-									if(v.getArrayUsage() == null)
-										v.setArrayUsage(new ArrayList<ArrayUse>());
-									
-									v.getArrayUsage().add(arrayUse);
-								}
-							}
-						}
-					}
-				}
-			}
-			// pop the declaration of the array always;
-			if(v.getArrayUsage() != null){
-				v.getArrayUsage().remove(0);
-			}
-		}
 	}
 	
 	public LabelSet calculateBufferOverflow(String algorithm){

@@ -8,7 +8,7 @@ import org.antlr.runtime.tree.Tree;
 import dk.dtu.imm.pa.analyzer.objects.CodeLine;
 import dk.dtu.imm.pa.analyzer.objects.Program;
 import dk.dtu.imm.pa.analyzer.objects.Variable;
-import dk.dtu.imm.pa.analyzer.objects.ArrayUse;
+import dk.dtu.imm.pa.analyzer.objects.Variable.ArrayUse;
 import dk.dtu.imm.pa.analyzer.objects.collections.DetectionOfSigns;
 import dk.dtu.imm.pa.analyzer.objects.collections.DetectionOfSignsSet;
 import dk.dtu.imm.pa.analyzer.objects.collections.ReachingDefinition;
@@ -30,8 +30,6 @@ public class FlowGraph {
 		this.calculateProgramFlow();
 		
 		this.calculateReachingDefinitions();
-		
-		this.generateArrayUsage();
 				
 //		this.calculateDetectionOfSigns();
 		
@@ -72,19 +70,12 @@ public class FlowGraph {
 										arrayUse.setVarIndex(program.getGlobalVariables().findByName(l.getElements().get(i+1).getText()));
 									}
 									
-									if(v.getArrayUsage() == null)
-										v.setArrayUsage(new ArrayList<ArrayUse>());
-									
 									v.getArrayUsage().add(arrayUse);
 								}
 							}
 						}
 					}
 				}
-			}
-			// pop the declaration of the array always;
-			if(v.getArrayUsage() != null){
-				v.getArrayUsage().remove(0);
 			}
 		}
 	}

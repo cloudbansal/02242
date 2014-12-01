@@ -82,10 +82,6 @@ public class FlowGraph {
 					}
 				}
 			}
-			// pop the declaration of the array always;
-			if(v.getArrayUsage() != null){
-				v.getArrayUsage().remove(0);
-			}
 		}
 	}
 	

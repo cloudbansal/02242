@@ -1,7 +1,5 @@
 package dk.dtu.imm.pa.analyzer.objects;
 
-import java.util.ArrayList;
-
 public class Variable {
 	private final String name;
 	private final int line;
@@ -9,7 +7,40 @@ public class Variable {
 	private boolean isArray;
 	private int     arrayLength;
 	
-	private ArrayList<ArrayUse> arrayUsage;
+	public class ArrayUse{
+		CodeLine label;
+		Variable varIndex;
+		int		 intIndex;
+		
+		public ArrayUse(CodeLine label) {
+			super();
+			this.label = label;
+		}
+		
+		public boolean isVarIndex(){
+			return (varIndex != null);
+		}
+		public CodeLine getLabel() {
+			return label;
+		}
+		public void setLabel(CodeLine label) {
+			this.label = label;
+		}
+		public Variable getVarIndex() {
+			return varIndex;
+		}
+		public void setVarIndex(Variable varIndex) {
+			this.varIndex = varIndex;
+		}
+		public int getIntIndex() {
+			return intIndex;
+		}
+		public void setIntIndex(int intIndex) {
+			this.intIndex = intIndex;
+		}
+	}
+	
+	private ArrayList<ArrayUse>;
 	
 	public Variable(int line, String name){
 		this.name = name;
@@ -59,14 +90,6 @@ public class Variable {
 
 	public void setArray(boolean isArray) {
 		this.isArray = isArray;
-	}
-
-	public ArrayList<ArrayUse> getArrayUsage() {
-		return arrayUsage;
-	}
-
-	public void setArrayUsage(ArrayList<ArrayUse> arrayUsage) {
-		this.arrayUsage = arrayUsage;
 	}
 	
 }

@@ -72,19 +72,12 @@ public class FlowGraph {
 										arrayUse.setVarIndex(program.getGlobalVariables().findByName(l.getElements().get(i+1).getText()));
 									}
 									
-									if(v.getArrayUsage() == null)
-										v.setArrayUsage(new ArrayList<ArrayUse>());
-									
 									v.getArrayUsage().add(arrayUse);
 								}
 							}
 						}
 					}
 				}
-			}
-			// pop the declaration of the array always;
-			if(v.getArrayUsage() != null){
-				v.getArrayUsage().remove(0);
 			}
 		}
 	}

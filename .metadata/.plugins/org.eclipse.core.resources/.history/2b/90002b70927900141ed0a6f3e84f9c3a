@@ -32,6 +32,9 @@ public class FlowGraph {
 		this.calculateReachingDefinitions();
 		
 		this.generateArrayUsage();
+		for(Variable v: program.getGlobalVariables()){
+			System.out.println(v.getArrayUsage());
+		}
 				
 //		this.calculateDetectionOfSigns();
 		

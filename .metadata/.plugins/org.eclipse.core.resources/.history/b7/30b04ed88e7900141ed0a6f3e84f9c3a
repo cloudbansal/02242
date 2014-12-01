@@ -16,9 +16,6 @@ public class VariableStore extends LinkedList<Variable> {
 	@Override
     public boolean add(Variable e) {
         if (this.contains(e)) {
-        	this.findByName(e.getName()).setArray(e.isArray());
-        	this.findByName(e.getName()).setArrayLength(e.getArrayLength());
-
             return false;
         }
         else {
