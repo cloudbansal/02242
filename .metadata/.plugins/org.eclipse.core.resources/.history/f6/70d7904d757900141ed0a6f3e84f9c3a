@@ -191,22 +191,7 @@ public class FlowGraph {
             CodeLine label1 = e.getSource();
             CodeLine label2 = e.getDestination();
             
-            if(label1.isIfStatement()){
-            	if(label2.getElseParent() == null){ // we are in true block
-            		label1.setExitDetectionOfSigns(getTrueDSfromLabel(label1));
-            	} else { // we are in false block
-            		label1.setExitDetectionOfSigns(getFalseDSfromLabel(label1));
-            	}
-            } else if (label1.isWhileStatement()){
-            	if(label2.getLoopParent() == label1){ // we are in true block
-            		label1.setExitDetectionOfSigns(getTrueDSfromLabel(label1));
-            	} else { // we are in false block
-            		label1.setExitDetectionOfSigns(getFalseDSfromLabel(label1));
-            	}
-            } else {
-                label1.setExitDetectionOfSigns(getDSfromLabel(label1));
-            }
-            
+            label1.setExitDetectionOfSigns(getDSfromLabel(label1));
             if( ! label2.getEntryDetectionOfSigns().contains(label1.getExitDetectionOfSigns())){
             	label2.setEntryDetectionOfSigns(label2.getEntryDetectionOfSigns().addition(label1.getExitDetectionOfSigns()));
                 for(Edge f : this.programFlow){

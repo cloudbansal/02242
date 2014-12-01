@@ -48,6 +48,7 @@ public class Program extends LinkedList<CodeLine> {
 					if(leftParenthesesFound){
 						if(element.getType() != TheLangLexer.RPAREN){
 							insideParentheses.add(element);
+							System.out.println(element);
 						} else {
 							break;
 						}
@@ -56,8 +57,10 @@ public class Program extends LinkedList<CodeLine> {
 					}
 				}
 			}
+			System.out.println(insideParentheses);
 			if(insideParentheses != null){
 				l.setBooleanExpression(new BooleanExpression(insideParentheses));
+				System.out.println(new BooleanExpression(insideParentheses));
 			}
 		}
 	}

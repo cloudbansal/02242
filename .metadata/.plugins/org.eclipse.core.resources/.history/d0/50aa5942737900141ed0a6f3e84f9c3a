@@ -10,7 +10,6 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.Tree;
 
-import dk.dtu.imm.pa.analyzer.BooleanExpression;
 import dk.dtu.imm.pa.analyzer.parser.TheLangLexer;
 import dk.dtu.imm.pa.analyzer.parser.TheLangParser;
 
@@ -40,11 +39,10 @@ public class Program extends LinkedList<CodeLine> {
 	
 	private void parseBooleanExpressions(){
 		for(CodeLine l: this){
-			ArrayList<Tree> insideParentheses = null;
 			if(l.isIfStatement() || l.isWhileStatement()){
-				insideParentheses = new ArrayList<Tree>();
-				boolean leftParenthesesFound = false;
+				ArrayList<Tree> insideParentheses = new ArrayList<Tree>();
 				for(Tree element : l.getElements()){
+					boolean leftParenthesesFound = false;
 					if(leftParenthesesFound){
 						if(element.getType() != TheLangLexer.RPAREN){
 							insideParentheses.add(element);
@@ -55,9 +53,6 @@ public class Program extends LinkedList<CodeLine> {
 						leftParenthesesFound = true;
 					}
 				}
-			}
-			if(insideParentheses != null){
-				l.setBooleanExpression(new BooleanExpression(insideParentheses));
 			}
 		}
 	}

@@ -1,7 +1,6 @@
 package dk.dtu.imm.pa.analyzer.objects;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import org.antlr.runtime.ANTLRFileStream;
@@ -10,7 +9,6 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.Tree;
 
-import dk.dtu.imm.pa.analyzer.BooleanExpression;
 import dk.dtu.imm.pa.analyzer.parser.TheLangLexer;
 import dk.dtu.imm.pa.analyzer.parser.TheLangParser;
 
@@ -35,31 +33,6 @@ public class Program extends LinkedList<CodeLine> {
 		
 		this.linkFlow();
 		this.removeReferencesToIndirectParents();
-		this.parseBooleanExpressions();
-	}
-	
-	private void parseBooleanExpressions(){
-		for(CodeLine l: this){
-			ArrayList<Tree> insideParentheses = null;
-			if(l.isIfStatement() || l.isWhileStatement()){
-				insideParentheses = new ArrayList<Tree>();
-				boolean leftParenthesesFound = false;
-				for(Tree element : l.getElements()){
-					if(leftParenthesesFound){
-						if(element.getType() != TheLangLexer.RPAREN){
-							insideParentheses.add(element);
-						} else {
-							break;
-						}
-					} else if(element.getType() == TheLangLexer.LPAREN){
-						leftParenthesesFound = true;
-					}
-				}
-			}
-			if(insideParentheses != null){
-				l.setBooleanExpression(new BooleanExpression(insideParentheses));
-			}
-		}
 	}
 	
 	/**

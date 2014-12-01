@@ -43,11 +43,12 @@ public class Program extends LinkedList<CodeLine> {
 			ArrayList<Tree> insideParentheses = null;
 			if(l.isIfStatement() || l.isWhileStatement()){
 				insideParentheses = new ArrayList<Tree>();
-				boolean leftParenthesesFound = false;
 				for(Tree element : l.getElements()){
+					boolean leftParenthesesFound = false;
 					if(leftParenthesesFound){
 						if(element.getType() != TheLangLexer.RPAREN){
 							insideParentheses.add(element);
+							System.out.println(element);
 						} else {
 							break;
 						}
@@ -56,8 +57,10 @@ public class Program extends LinkedList<CodeLine> {
 					}
 				}
 			}
+			System.out.println(insideParentheses);
 			if(insideParentheses != null){
 				l.setBooleanExpression(new BooleanExpression(insideParentheses));
+				System.out.println(new BooleanExpression(insideParentheses));
 			}
 		}
 	}

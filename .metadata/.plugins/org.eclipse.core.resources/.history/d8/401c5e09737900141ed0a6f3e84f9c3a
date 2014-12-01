@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.antlr.runtime.tree.*;
 
-import dk.dtu.imm.pa.analyzer.BooleanExpression;
 import dk.dtu.imm.pa.analyzer.objects.collections.DetectionOfSignsSet;
 import dk.dtu.imm.pa.analyzer.objects.collections.IntervalAnalysisSet;
 import dk.dtu.imm.pa.analyzer.objects.collections.ReachingDefinitionsSet;
@@ -28,9 +27,6 @@ public class CodeLine {
     private IntervalAnalysisSet exitIntervalAnalysis;
     
     private ArrayList<Tree> elements;
-    
-    // Boolean expression in its case;
-    private BooleanExpression booleanExpression;
     
     // Line number
     private int lineNumber;
@@ -458,13 +454,5 @@ public class CodeLine {
 		return  (o instanceof CodeLine)
 				&&
 				(( (CodeLine) o ).getLineNumber() == this.getLineNumber() );
-	}
-
-	public BooleanExpression getBooleanExpression() {
-		return booleanExpression;
-	}
-
-	public void setBooleanExpression(BooleanExpression booleanExpression) {
-		this.booleanExpression = booleanExpression;
 	}
 }

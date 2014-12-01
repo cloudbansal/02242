@@ -1,0 +1,42 @@
+package dk.dtu.imm.pa.analyzer;
+
+public class BooleanExpression {
+	private String firstVariable;
+	private String secondVariable;
+	private int operator;
+	
+	public BooleanExpression(String firstVariable, String secondVariable, int operator) {
+		super();
+		this.firstVariable = firstVariable;
+		this.secondVariable = secondVariable;
+		this.operator = operator;
+	}
+	
+	public enum Operators {
+		GT, LT, GE, LE, EQ, NEQ
+	}
+
+	public String getFirstVariable() {
+		return firstVariable;
+	}
+
+	public void setFirstVariable(String firstVariable) {
+		this.firstVariable = firstVariable;
+	}
+
+	public String getSecondVariable() {
+		return secondVariable;
+	}
+
+	public void setSecondVariable(String secondVariable) {
+		this.secondVariable = secondVariable;
+	}
+
+	public int getOperator() {
+		return operator;
+	}
+
+	public void setOperator(int operator) {
+		this.operator = operator;
+	}
+}

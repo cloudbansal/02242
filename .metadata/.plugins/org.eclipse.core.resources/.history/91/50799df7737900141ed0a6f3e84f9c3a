@@ -43,8 +43,8 @@ public class Program extends LinkedList<CodeLine> {
 			ArrayList<Tree> insideParentheses = null;
 			if(l.isIfStatement() || l.isWhileStatement()){
 				insideParentheses = new ArrayList<Tree>();
-				boolean leftParenthesesFound = false;
 				for(Tree element : l.getElements()){
+					boolean leftParenthesesFound = false;
 					if(leftParenthesesFound){
 						if(element.getType() != TheLangLexer.RPAREN){
 							insideParentheses.add(element);
