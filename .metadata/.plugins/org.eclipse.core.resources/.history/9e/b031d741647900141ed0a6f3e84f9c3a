@@ -229,17 +229,17 @@ public class FlowGraph {
 			//Only kill if its not an array
 			if(!isArray){
 				kill.add(new DetectionOfSigns(v.getName(), true, true, true));
-				result = result.removal(kill);
+				result.removal(kill);
 				kill.clear();
 			}
 			
 			if(l.isDeclarationStatement()){ // if var declaration, variable, false, false, true
 				gen.add(new DetectionOfSigns(v.getName(), false, false, true));
-				result = result.addition(gen);
+				result.addition(gen);
 				gen.clear();
 			} else if(l.isReadStatement()){ // if read, variable, true, true, true
 				gen.add(new DetectionOfSigns(v.getName(), true, true, true));
-				result = result.addition(gen);
+				result.addition(gen);
 				gen.clear();
 			} else if(l.isAssignmentStatement()){
 				// calculate sign of statement
@@ -262,11 +262,11 @@ public class FlowGraph {
 							int number = Integer.parseInt(labelElements.get(i).getText());
 							if(numberOfElements == 1){
 								gen.add(new DetectionOfSigns(v.getName(), number > 0, false, number == 0));
-								result = result.addition(gen);
+								result.addition(gen);
 								gen.clear();
 							}else if(numberOfElements == 2){
 								gen.add(new DetectionOfSigns(v.getName(), false, number > 0, number == 0));
-								result = result.addition(gen);
+								result.addition(gen);
 								gen.clear();
 							}
 						}
@@ -291,13 +291,13 @@ public class FlowGraph {
 						String nameOfVariable = labelElements.get(i).getText();
 						DetectionOfSigns dos = l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable);
 						gen.add(new DetectionOfSigns(v.getName(),dos.isPlus(),dos.isMinus(),dos.isZero()));
-						result = result.addition(gen);
+						result.addition(gen);
 						gen.clear();
 					}else if(numberOfElements == 2){
 						String nameOfVariable = labelElements.get(i+1).getText();
 						DetectionOfSigns dos = l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable);
 						gen.add(new DetectionOfSigns(v.getName(),!dos.isPlus(),!dos.isMinus(),dos.isZero()));
-						result = result.addition(gen);
+						result.addition(gen);
 						gen.clear();
 					}else if(numberOfElements == 3){
 						DetectionOfSigns dos1 = new DetectionOfSigns(v.getName(), false,false,false);
@@ -329,7 +329,7 @@ public class FlowGraph {
 						    		 if (cl.getLineNumber() == 4)
 						 	    	System.out.println("Part 3:entry: " + cl.getEntryDetectionOfSigns() + " \n exit: " + cl.getExitDetectionOfSigns());
 						    	 }
-								result = result.addition(gen);
+								result.addition(gen);
 								for(CodeLine cl : program){
 						    		 if (cl.getLineNumber() == 4)
 						 	    	System.out.println("Part 4:entry: " + cl.getEntryDetectionOfSigns() + " \n exit: " + cl.getExitDetectionOfSigns());
@@ -344,7 +344,7 @@ public class FlowGraph {
 										,(dos1.isMinus()||dos2.isPlus()),
 										((dos1.isPlus()&&dos2.isPlus())||(dos1.isMinus()&&dos2.isMinus())||(dos1.isZero()&&dos2.isZero())));
 								gen.add(dos);
-								result = result.addition(gen);
+								result.addition(gen);
 								gen.clear();
 								break;
 							}
@@ -354,7 +354,7 @@ public class FlowGraph {
 										,((dos1.isPlus()&&dos2.isMinus())||(dos1.isMinus()&&dos2.isPlus())),
 										(dos1.isZero()||dos2.isZero()));
 								gen.add(dos);
-								result = result.addition(gen);
+								result.addition(gen);
 								gen.clear();
 								break;
 							}
@@ -362,7 +362,7 @@ public class FlowGraph {
 								if (dos2.isZero()){
 									DetectionOfSigns dos = new DetectionOfSigns(v.getName(),false,false,false);
 									gen.add(dos);
-									result = result.addition(gen);
+									result.addition(gen);
 									gen.clear();
 									break;
 								}
@@ -372,7 +372,7 @@ public class FlowGraph {
 											,((dos1.isPlus()&&dos2.isMinus())||(dos1.isMinus()&&dos2.isPlus())),
 											(dos1.isZero()));
 									gen.add(dos);
-									result = result.addition(gen);
+									result.addition(gen);
 									gen.clear();
 									break;
 								}
