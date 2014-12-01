@@ -24,7 +24,6 @@ public class DetectionOfSignsSet extends ArrayList<DetectionOfSigns>{
 		for(DetectionOfSigns ds : detectionOfSignsSet) {
 			if(newDetectionOfSignsSet.containsVariableName(ds.getName())){
 				newDetectionOfSignsSet.getByVariableName(ds.getName()).add(ds);
-				
 			} else {
 				
 				newDetectionOfSignsSet.add(ds);
@@ -63,7 +62,7 @@ public class DetectionOfSignsSet extends ArrayList<DetectionOfSigns>{
 	public DetectionOfSigns getByVariableName(String name){
 		for(DetectionOfSigns ds : this){
 			if(ds.getName().equals(name)){
-				return new DetectionOfSigns(ds);
+				return ds;
 			}
 		}
 		return null;

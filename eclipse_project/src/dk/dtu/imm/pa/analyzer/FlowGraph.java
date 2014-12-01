@@ -181,8 +181,6 @@ public class FlowGraph {
             if(this.initLabels.contains(l)){
                 for(Variable v: l.getGlobalVariables()){
                     l.getEntryDetectionOfSigns().add(new DetectionOfSigns(v.getName(), false, false, true ));
-//                    System.out.println("This is Init Label.Setting Entry Label to\nEntry"+l.getLineNumber()+":"+l.getEntryDetectionOfSigns());
-                    
                 }
             }
         }
@@ -194,14 +192,8 @@ public class FlowGraph {
             CodeLine label2 = e.getDestination();
             
             label1.setExitDetectionOfSigns(getDSfromLabel(label1));
-           
-//            System.out.println("Exit "+label1.getLineNumber()+"is :"+label1.getExitDetectionOfSigns());
-//        	System.out.println("Entry "+label2.getLineNumber()+"is :"+label2.getEntryDetectionOfSigns());
-        	
             if( ! label2.getEntryDetectionOfSigns().contains(label1.getExitDetectionOfSigns())){
-//            	System.out.println("Exit and Entry are not equal");
             	label2.setEntryDetectionOfSigns(label2.getEntryDetectionOfSigns().addition(label1.getExitDetectionOfSigns()));
-//            	System.out.println("Entry "+label2.getLineNumber()+"is :"+label2.getEntryDetectionOfSigns());
                 for(Edge f : this.programFlow){
                     if(f.getSource().equals(label2)){
                         worklist.add(f);
@@ -273,7 +265,7 @@ public class FlowGraph {
 					}
 				} else {
 					if(l.isWhileStatement() || l.isIfStatement()){
-						System.out.println("Exit "+l.getLineNumber()+" returned is: "+result);
+//						System.out.println("Exit "+l.getLineNumber()+" returned is: "+result);
 						return result;
 					}
 					// Find assignment, and parse expression at the right
@@ -289,13 +281,13 @@ public class FlowGraph {
 					
 					if(numberOfElements == 1){
 						String nameOfVariable = labelElements.get(i).getText();
-						DetectionOfSigns dos = l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable);
+						DetectionOfSigns dos = new DetectionOfSigns(l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable));
 						gen.add(new DetectionOfSigns(v.getName(),dos.isPlus(),dos.isMinus(),dos.isZero()));
 						result = result.addition(gen);
 						gen.clear();
 					}else if(numberOfElements == 2){
 						String nameOfVariable = labelElements.get(i+1).getText();
-						DetectionOfSigns dos = l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable);
+						DetectionOfSigns dos = new DetectionOfSigns(l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable));
 						gen.add(new DetectionOfSigns(v.getName(),!dos.isPlus(),!dos.isMinus(),dos.isZero()));
 						result = result.addition(gen);
 						gen.clear();
@@ -307,13 +299,13 @@ public class FlowGraph {
 						String nameOfVariable2 = labelElements.get(i+2).getText();
 						if (labelElements.get(i).getType() == TheLangLexer.INTEGER){
 							dos1 = new DetectionOfSigns(v.getName(), true,false,false);
-							dos2 = l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable2);
+							dos2 = new DetectionOfSigns(l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable2));
 						}else if(labelElements.get(i+2).getType() == TheLangLexer.INTEGER){
-							dos1 = l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable1);
+							dos1 = new DetectionOfSigns(l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable1));
 							dos2 = new DetectionOfSigns(v.getName(), true,false,false);
 						}else{
-							dos1 = l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable1);
-							dos2 = l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable2);
+							dos1 = new DetectionOfSigns(l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable1));
+							dos2 = new DetectionOfSigns(l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable2));
 						}
 						
 						int operatorType = labelElements.get(i+1).getType();
@@ -325,15 +317,7 @@ public class FlowGraph {
 										,(dos1.isMinus()||dos2.isMinus()),
 										((dos1.isPlus()&&dos2.isMinus())||(dos1.isMinus()&&dos2.isPlus())||(dos1.isZero()&&dos2.isZero())));
 								gen.add(dos);
-								for(CodeLine cl : program){
-						    		 if (cl.getLineNumber() == 4)
-						 	    	System.out.println("Part 3:entry: " + cl.getEntryDetectionOfSigns() + " \n exit: " + cl.getExitDetectionOfSigns());
-						    	 }
 								result = result.addition(gen);
-								for(CodeLine cl : program){
-						    		 if (cl.getLineNumber() == 4)
-						 	    	System.out.println("Part 4:entry: " + cl.getEntryDetectionOfSigns() + " \n exit: " + cl.getExitDetectionOfSigns());
-						    	 }
 								gen.clear();
 								
 								break;
