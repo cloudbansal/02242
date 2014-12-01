@@ -94,8 +94,13 @@ public class FlowGraph {
 		ReachingDefinitionsSet kill = new ReachingDefinitionsSet();
 		ReachingDefinitionsSet gen  = new ReachingDefinitionsSet();
 		for(Variable v : l.getModifiedVariables()){
-			for(CodeLine tempLabel : this.programLabels){
-				kill.add(new ReachingDefinition(v.getName(), tempLabel.getLineNumber()));
+			String modifiedVariable = v.getName();
+			boolean isArray = modifiedVariable.equals(modifiedVariable.toUpperCase());
+			//Only kill if its not an array
+			if(!isArray){
+				for(CodeLine tempLabel : this.programLabels){
+					kill.add(new ReachingDefinition(v.getName(), tempLabel.getLineNumber()));
+				}
 			}
 		}
 		
@@ -103,10 +108,8 @@ public class FlowGraph {
 			kill.add(new ReachingDefinition(v.getName(), -1));
 			gen.add(new ReachingDefinition(v.getName(), l.getLineNumber()));
 		}
-				
 		result = result.removal(kill);
 		result = result.addition(gen);
-		
 		return result;
 	}
 	
@@ -188,10 +191,13 @@ public class FlowGraph {
             
             label1.setExitDetectionOfSigns(getDSfromLabel(label1));
            
-           
+//            System.out.println("Exit "+label1.getLineNumber()+"is :"+label1.getExitDetectionOfSigns());
+//        	System.out.println("Entry "+label2.getLineNumber()+"is :"+label2.getEntryDetectionOfSigns());
+        	
             if( ! label2.getEntryDetectionOfSigns().contains(label1.getExitDetectionOfSigns())){
-            	
+//            	System.out.println("Exit and Entry are not equal");
             	label2.setEntryDetectionOfSigns(label2.getEntryDetectionOfSigns().addition(label1.getExitDetectionOfSigns()));
+//            	System.out.println("Entry "+label2.getLineNumber()+"is :"+label2.getEntryDetectionOfSigns());
                 for(Edge f : this.programFlow){
                     if(f.getSource().equals(label2)){
                         worklist.add(f);
@@ -209,19 +215,22 @@ public class FlowGraph {
 		//                       if we're in the true block, run trueFunction(), and else, falseFunction()
 
 		// Set just contains one modified variable each time
-		Variable modifiedVariable;
+		String modifiedVariable;
 		
 		for(Variable v : l.getModifiedVariables()){
 	        // order (variableName, plus, minus, zero)
 
-			modifiedVariable = v;
-			kill.add(new DetectionOfSigns(v.getName(), true, true, true));
-			
+			modifiedVariable = v.getName();
+			boolean isArray = modifiedVariable.equals(modifiedVariable.toUpperCase());
+			//Only kill if its not an array
+			if(!isArray){
+				kill.add(new DetectionOfSigns(v.getName(), true, true, true));
+			}
 			
 			if(l.isDeclarationStatement()){ // if var declaration, variable, false, false, true
-				result.add(new DetectionOfSigns(v.getName(), false, false, true));
+				gen.add(new DetectionOfSigns(v.getName(), false, false, true));
 			} else if(l.isReadStatement()){ // if read, variable, true, true, true
-				result.add(new DetectionOfSigns(v.getName(), true, true, true));
+				gen.add(new DetectionOfSigns(v.getName(), true, true, true));
 			} else if(l.isAssignmentStatement()){
 				// calculate sign of statement
 				ArrayList<Tree> labelElements = l.getElements();
@@ -336,9 +345,9 @@ public class FlowGraph {
 				}
 			}		
 		}
-		
 		result = result.removal(kill);
 		result = result.addition(gen);
+			
 		return result;
 	}
 	
