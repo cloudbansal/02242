@@ -38,9 +38,9 @@ public class DetectionOfSignsSet extends ArrayList<DetectionOfSigns>{
 			if(newDetectionOfSignsSet.containsVariableName(ds.getName())){
 				DetectionOfSigns temp = newDetectionOfSignsSet.getByVariableName(ds.getName());
 				temp.substract(ds);
-				if(!(temp.isMinus() || temp.isPlus() || temp.isZero())){
-					newDetectionOfSignsSet.remove(newDetectionOfSignsSet.getByVariableName(ds.getName()));
-				}
+//				if(!(temp.isMinus() || temp.isPlus() || temp.isZero())){
+//					newDetectionOfSignsSet.remove(newDetectionOfSignsSet.getByVariableName(ds.getName()));
+//				}
 			} 
 		}
 		
@@ -66,7 +66,7 @@ public class DetectionOfSignsSet extends ArrayList<DetectionOfSigns>{
 	}
 	
 	public boolean contains(DetectionOfSignsSet detectionOfSignsSet){
-		boolean result = false;
+		boolean result = true;
 		
 		for(DetectionOfSigns ds: detectionOfSignsSet ){
 			result &= this.contains(ds);

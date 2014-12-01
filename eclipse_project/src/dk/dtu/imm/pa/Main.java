@@ -16,7 +16,7 @@ public class Main {
 	// Check for source file to be received as argument
 	String srcFile;
 	if(args.length != 1){
-		srcFile = "samples/sample.lang";
+		srcFile = "samples/reportExample.lang";
 	} else {
 		srcFile = args[0];
 	}
@@ -42,14 +42,20 @@ public class Main {
 	    System.out.println("Program flow:");
 	    System.out.println(fg.getProgramFlow());
 	    System.out.println();
-//	    System.out.println("Entry reaching definitions set, per label:");
+	    System.out.println("Reaching definitions set, per label:");
 //	    for(CodeLine cl : program){
 //	    	System.out.println(cl);
 //	    	System.out.println("entry: " + cl.getEntryReachingDefinitions() + " - exit: " + cl.getExitReachingDefinitions());
 //	    	System.out.println();
 //	    	System.out.println();
 //	    }
-
+	    System.out.println("Detection of Sign set, per label:");
+	    for(CodeLine cl : program){
+	    	System.out.println(cl);
+	    	System.out.println("entry: " + cl.getEntryDetectionOfSigns() + " - exit: " + cl.getExitDetectionOfSigns());
+	    	System.out.println();
+	    	System.out.println();
+	    }
 
 	} catch (IOException e) {
 		System.err.println("Error trying to parse source file (" + srcFile + "):");

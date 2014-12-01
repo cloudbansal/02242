@@ -89,7 +89,7 @@ public class FlowGraph {
 	}
 	
 		private ReachingDefinitionsSet getRDfromLabel(CodeLine l){
-		ReachingDefinitionsSet result = new ReachingDefinitionsSet();
+		ReachingDefinitionsSet result = new ReachingDefinitionsSet().addition(l.getEntryReachingDefinitions());
 		
 		ReachingDefinitionsSet kill = new ReachingDefinitionsSet();
 		ReachingDefinitionsSet gen  = new ReachingDefinitionsSet();
@@ -104,7 +104,7 @@ public class FlowGraph {
 			gen.add(new ReachingDefinition(v.getName(), l.getLineNumber()));
 		}
 				
-		result = l.getEntryReachingDefinitions().removal(kill);
+		result = result.removal(kill);
 		result = result.addition(gen);
 		
 		return result;
@@ -174,6 +174,8 @@ public class FlowGraph {
             if(this.initLabels.contains(l)){
                 for(Variable v: l.getGlobalVariables()){
                     l.getEntryDetectionOfSigns().add(new DetectionOfSigns(v.getName(), false, false, true ));
+//                    System.out.println("This is Init Label.Setting Entry Label to\nEntry"+l.getLineNumber()+":"+l.getEntryDetectionOfSigns());
+                    
                 }
             }
         }
@@ -184,25 +186,29 @@ public class FlowGraph {
             CodeLine label1 = e.getSource();
             CodeLine label2 = e.getDestination();
             
+//            System.out.println("Entry"+label2.getLineNumber()+":"+label2.getEntryDetectionOfSigns());
+//            System.out.println("Exit"+label2.getLineNumber()+":"+label2.getExitDetectionOfSigns());
             label1.setExitDetectionOfSigns(getDSfromLabel(label1));
-
+//            System.out.println("Entry"+label1.getLineNumber()+":"+label1.getEntryDetectionOfSigns());
+//            System.out.println("Exit"+label1.getLineNumber()+":"+label1.getExitDetectionOfSigns());
+           
+           
             if( ! label2.getEntryDetectionOfSigns().contains(label1.getExitDetectionOfSigns())){
-            	System.out.println("Entry:"+label2.getLineNumber()+ label2.getEntryDetectionOfSigns());
-            	System.out.println("Exit:"+label1.getLineNumber()+label1.getExitDetectionOfSigns());
-                label2.setEntryDetectionOfSigns(label2.getEntryDetectionOfSigns().addition(label1.getExitDetectionOfSigns()));
+//            	System.out.println("Exit"+label1.getLineNumber()+" is not equal to Entry"+label2.getLineNumber());
+            	
+            	label2.setEntryDetectionOfSigns(label2.getEntryDetectionOfSigns().addition(label1.getExitDetectionOfSigns()));
+//            	System.out.println("New Entry"+label2.getLineNumber()+":"+label2.getEntryDetectionOfSigns());
                 for(Edge f : this.programFlow){
                     if(f.getSource().equals(label2)){
                         worklist.add(f);
                     }
                 }
             }
-            System.out.println("Entry2:"+label2.getLineNumber()+ label2.getEntryDetectionOfSigns());
-
         }
 	}
 
 	private DetectionOfSignsSet getDSfromLabel(CodeLine l){
-		DetectionOfSignsSet result = new DetectionOfSignsSet();
+		DetectionOfSignsSet result = new DetectionOfSignsSet().addition(l.getEntryDetectionOfSigns());		
 		DetectionOfSignsSet kill = new DetectionOfSignsSet();
 		DetectionOfSignsSet gen = new DetectionOfSignsSet();
 		// if variablehasparent  find the parent of block, and get if true or false (always true in while)
@@ -250,7 +256,8 @@ public class FlowGraph {
 					}
 				} else {
 					if(l.isWhileStatement() || l.isIfStatement()){
-						return l.getEntryDetectionOfSigns();
+						System.out.println("Exit "+l.getLineNumber()+" returned is: "+result);
+						return result;
 					}
 					// Find assignment, and parse expression at the right
 					int i; // position of first elment after assign
@@ -266,7 +273,9 @@ public class FlowGraph {
 					if(numberOfElements == 1){
 						String nameOfVariable = labelElements.get(i).getText();
 						DetectionOfSigns dos = l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable);
+						System.out.println("Entry"+l.getLineNumber()+": "+l.getEntryDetectionOfSigns());
 						dos.setName(v.getName());
+						System.out.println("Entry"+l.getLineNumber()+": "+l.getEntryDetectionOfSigns());
 						gen.add(dos);
 					}else if(numberOfElements == 2){
 						String nameOfVariable = labelElements.get(i+1).getText();
@@ -343,9 +352,14 @@ public class FlowGraph {
 				}
 			}		
 		}
-		result = l.getEntryDetectionOfSigns().removal(kill);
-		result = result.addition(gen);
 		
+//		System.out.println("Exit "+l.getLineNumber()+" is: "+result);
+		result = result.removal(kill);
+//		System.out.println("KIll "+l.getLineNumber()+" is: "+kill);
+//		System.out.println("Result "+l.getLineNumber()+" after removal of kill is: "+result);
+		result = result.addition(gen);
+//		System.out.println("Gen "+l.getLineNumber()+" is: "+gen);
+//		System.out.println("Result "+l.getLineNumber()+" after addition of gen is: "+result);
 		return result;
 	}
 	
