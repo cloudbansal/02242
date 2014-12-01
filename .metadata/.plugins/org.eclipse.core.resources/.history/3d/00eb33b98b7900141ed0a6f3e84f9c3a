@@ -35,7 +35,6 @@ public class Variable {
 		if(this.isArray){
 			return this.getName() + "[" + this.getArrayLength() +"]";
 		}
-		
 		return this.getName();
 	}
 	

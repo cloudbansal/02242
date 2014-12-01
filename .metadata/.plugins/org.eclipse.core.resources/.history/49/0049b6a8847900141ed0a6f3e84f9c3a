@@ -56,9 +56,6 @@ public class Main {
 	    	System.out.println();
 	    	System.out.println();
 	    }
-	    
-	    System.out.println("\n\nProgram slice for line 4:");
-	    System.out.println(fg.calculateProgramSlice(fg.getProgramLabels().findByLineNumber(4)));
 
 	} catch (IOException e) {
 		System.err.println("Error trying to parse source file (" + srcFile + "):");

@@ -109,13 +109,12 @@ public class CodeLine {
                     	bracketFound = true;
                 	}
         		}
+        		
         		if(!assignFound && bracketFound && this.isDeclarationStatement){
         			Variable newArrayVariable = new Variable(this.getLineNumber(), this.elements.get(this.elements.size() - 3).getText());
         			newArrayVariable.setArray(true);
         			newArrayVariable.setArrayLength(Integer.parseInt(element.getText()));
-        			System.out.println(newArrayVariable);
         			
-        			this.globalVariables.remove(this.globalVariables.findByName(this.elements.get(this.elements.size() - 3).getText()));
         			this.globalVariables.add(newArrayVariable);
         		}
         		break;
@@ -152,7 +151,9 @@ public class CodeLine {
                 }
                 
                 Variable thePreexistingVar = globalVariables.findByName(elementToAssignTo.getText());
-                                                	
+                
+                thePreexistingVar.setArray(true);
+                                	
                 modifiedVariables.add(thePreexistingVar); // it must exist, so we find it
                 
                 this.setAssignmentStatement(true);
@@ -178,12 +179,15 @@ public class CodeLine {
                 
                 // If we find a declaration, and no assign sign, it's a new array declaration
                 // remove the preceding element modified Variable, and substitute with ArrayVariable
+                Variable newVariable = new Variable(this.getLineNumber(), arrayVariableName);
+                newVariable.setArray(true);
                 
                 if(!openBracketFound && !assignFound && !this.isIfStatement && !this.isWhileStatement){
-                	this.modifiedVariables.add(globalVariables.findByName(arrayVariableName));
+                	this.modifiedVariables.add(newVariable);
                 } else {
                 	this.usedVariables.add(globalVariables.findByName(arrayVariableName));
                 }
+                globalVariables.add(newVariable);
                 break;
             }
             // Check whether this uses/declares a variable

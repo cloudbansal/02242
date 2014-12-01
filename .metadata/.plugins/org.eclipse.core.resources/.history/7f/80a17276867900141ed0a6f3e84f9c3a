@@ -30,9 +30,9 @@ public class FlowGraph {
 		
 		this.calculateReachingDefinitions();
 				
-//		this.calculateDetectionOfSigns();
+		this.calculateDetectionOfSigns();
 		
-		//this.calculateIntervalAnalysis();
+		this.calculateIntervalAnalysis();
 		
 	};
 	
@@ -50,23 +50,6 @@ public class FlowGraph {
 
 	public EdgeSet getProgramFlow() {
 		return programFlow;
-	}
-	
-	public LabelSet calculateBufferOverflow(String algorithm){
-		LabelSet result = new LabelSet();
-		if ("DS".equalsIgnoreCase(algorithm)){
-			// We calculate first the DS
-			this.calculateDetectionOfSigns();
-			
-			for(CodeLine l : programLabels){
-				
-			}
-			
-		} else if ("IA".equalsIgnoreCase(algorithm)){
-			
-		}
-		
-		return result;
 	}
 	
 	private void calculateReachingDefinitions(){ 

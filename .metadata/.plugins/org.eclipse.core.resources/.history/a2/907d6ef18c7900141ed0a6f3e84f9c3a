@@ -113,9 +113,7 @@ public class CodeLine {
         			Variable newArrayVariable = new Variable(this.getLineNumber(), this.elements.get(this.elements.size() - 3).getText());
         			newArrayVariable.setArray(true);
         			newArrayVariable.setArrayLength(Integer.parseInt(element.getText()));
-        			System.out.println(newArrayVariable);
         			
-        			this.globalVariables.remove(this.globalVariables.findByName(this.elements.get(this.elements.size() - 3).getText()));
         			this.globalVariables.add(newArrayVariable);
         		}
         		break;

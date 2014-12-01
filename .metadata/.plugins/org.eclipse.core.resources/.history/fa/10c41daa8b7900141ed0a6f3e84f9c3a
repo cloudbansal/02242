@@ -32,10 +32,6 @@ public class Variable {
 	 * Return variable name when printed
 	 */
 	public String toString(){
-		if(this.isArray){
-			return this.getName() + "[" + this.getArrayLength() +"]";
-		}
-		
 		return this.getName();
 	}
 	

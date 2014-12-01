@@ -3,9 +3,7 @@ package dk.dtu.imm.pa.analyzer.objects;
 public class Variable {
 	private final String name;
 	private final int line;
-	
 	private boolean isArray;
-	private int     arrayLength;
 	
 	public Variable(int line, String name){
 		this.name = name;
@@ -20,22 +18,10 @@ public class Variable {
 		return this.line;
 	}
 	
-	public int getArrayLength() {
-		return arrayLength;
-	}
-
-	public void setArrayLength(int arrayLength) {
-		this.arrayLength = arrayLength;
-	}
-	
 	/**
 	 * Return variable name when printed
 	 */
 	public String toString(){
-		if(this.isArray){
-			return this.getName() + "[" + this.getArrayLength() +"]";
-		}
-		
 		return this.getName();
 	}
 	

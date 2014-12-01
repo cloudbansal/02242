@@ -29,10 +29,12 @@ public class FlowGraph {
 		this.calculateProgramFlow();
 		
 		this.calculateReachingDefinitions();
-				
-//		this.calculateDetectionOfSigns();
 		
-		//this.calculateIntervalAnalysis();
+		//System.out.println(this.calculateProgramSlice(programLabels.findByLineNumber(11)));
+		
+		this.calculateDetectionOfSigns();
+		
+		this.calculateIntervalAnalysis();
 		
 	};
 	
@@ -50,23 +52,6 @@ public class FlowGraph {
 
 	public EdgeSet getProgramFlow() {
 		return programFlow;
-	}
-	
-	public LabelSet calculateBufferOverflow(String algorithm){
-		LabelSet result = new LabelSet();
-		if ("DS".equalsIgnoreCase(algorithm)){
-			// We calculate first the DS
-			this.calculateDetectionOfSigns();
-			
-			for(CodeLine l : programLabels){
-				
-			}
-			
-		} else if ("IA".equalsIgnoreCase(algorithm)){
-			
-		}
-		
-		return result;
 	}
 	
 	private void calculateReachingDefinitions(){ 
@@ -132,7 +117,7 @@ public class FlowGraph {
 			return result;
 		}
 	
-	public LabelSet calculateProgramSlice(CodeLine labelOfInterest){
+	private LabelSet calculateProgramSlice(CodeLine labelOfInterest){
 		LabelSet result = new LabelSet();
 		LabelSet worklist = new LabelSet();
 		
@@ -214,7 +199,10 @@ public class FlowGraph {
             	}
             } else if (label1.isWhileStatement()){
             	if(label2.getLoopParent() == label1){ // we are in true block
+            		System.out.println("before" + label1.getExitDetectionOfSigns());
             		label1.setExitDetectionOfSigns(getTrueDSfromLabel(label1));
+            		System.out.println("after" + label1.getExitDetectionOfSigns());
+
             	} else { // we are in false block
             		label1.setExitDetectionOfSigns(getFalseDSfromLabel(label1));
             	}
@@ -237,7 +225,6 @@ public class FlowGraph {
 		DetectionOfSignsSet result = new DetectionOfSignsSet();
 		
 		DetectionOfSignsSet labelEntryDos = l.getEntryDetectionOfSigns();
-		result = result.addition(labelEntryDos);
 		
 		BooleanExpression be = l.getBooleanExpression();
 		
@@ -396,7 +383,6 @@ public class FlowGraph {
 		DetectionOfSignsSet result = new DetectionOfSignsSet();
 		
 		DetectionOfSignsSet labelEntryDos = l.getEntryDetectionOfSigns();
-		result = result.addition(labelEntryDos);
 		
 		BooleanExpression be = l.getBooleanExpression();
 		
@@ -552,6 +538,15 @@ public class FlowGraph {
 	}
 
 	private DetectionOfSignsSet getDSfromLabel(CodeLine l){
+		System.out.println("Detection of Sign set, per label:");
+	    for(CodeLine cl : program){
+	    	if(cl.getLineNumber() == 4){
+		    	System.out.println("entry: " + cl.getEntryDetectionOfSigns() + " \n exit: " + cl.getExitDetectionOfSigns());
+		    	System.out.println();
+		    	System.out.println();
+
+	    	}
+	    }
 		DetectionOfSignsSet result = new DetectionOfSignsSet().addition(l.getEntryDetectionOfSigns());		
 		DetectionOfSignsSet kill = new DetectionOfSignsSet();
 		DetectionOfSignsSet gen = new DetectionOfSignsSet();

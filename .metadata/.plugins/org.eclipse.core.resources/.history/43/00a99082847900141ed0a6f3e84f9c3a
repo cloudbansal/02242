@@ -29,10 +29,12 @@ public class FlowGraph {
 		this.calculateProgramFlow();
 		
 		this.calculateReachingDefinitions();
-				
-//		this.calculateDetectionOfSigns();
 		
-		//this.calculateIntervalAnalysis();
+		//System.out.println(this.calculateProgramSlice(programLabels.findByLineNumber(11)));
+		
+		this.calculateDetectionOfSigns();
+		
+		this.calculateIntervalAnalysis();
 		
 	};
 	
@@ -50,23 +52,6 @@ public class FlowGraph {
 
 	public EdgeSet getProgramFlow() {
 		return programFlow;
-	}
-	
-	public LabelSet calculateBufferOverflow(String algorithm){
-		LabelSet result = new LabelSet();
-		if ("DS".equalsIgnoreCase(algorithm)){
-			// We calculate first the DS
-			this.calculateDetectionOfSigns();
-			
-			for(CodeLine l : programLabels){
-				
-			}
-			
-		} else if ("IA".equalsIgnoreCase(algorithm)){
-			
-		}
-		
-		return result;
 	}
 	
 	private void calculateReachingDefinitions(){ 
@@ -132,7 +117,7 @@ public class FlowGraph {
 			return result;
 		}
 	
-	public LabelSet calculateProgramSlice(CodeLine labelOfInterest){
+	private LabelSet calculateProgramSlice(CodeLine labelOfInterest){
 		LabelSet result = new LabelSet();
 		LabelSet worklist = new LabelSet();
 		
