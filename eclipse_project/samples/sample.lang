@@ -1,6 +1,6 @@
 program
-low int a;
-high int x;
+int a;
+int x;
 int z;
 a:=10;
 x := a+b;

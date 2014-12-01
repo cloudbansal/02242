@@ -47,15 +47,19 @@ public class DetectionOfSigns {
 	}
 	
 	public void add(DetectionOfSigns detectionOfSigns){
-		this.plus  = this.plus  && detectionOfSigns.isPlus();
-		this.minus = this.minus && detectionOfSigns.isMinus();
-		this.zero  = this.zero  && detectionOfSigns.isZero();
+		this.plus  = this.plus  || detectionOfSigns.isPlus();
+		this.minus = this.minus || detectionOfSigns.isMinus();
+		this.zero  = this.zero  || detectionOfSigns.isZero();
 	}
 	
 	public void substract(DetectionOfSigns detectionOfSigns){
 		this.plus  = this.plus  && !detectionOfSigns.isPlus();
 		this.minus = this.minus && !detectionOfSigns.isMinus();
 		this.zero  = this.zero  && !detectionOfSigns.isZero();
+	}
+	
+	public String toString(){
+		return "(" + this.name + ", +:" + this.plus + ", -:" + this.minus + ", 0:" + this.zero +")";
 	}
 
 }

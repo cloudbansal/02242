@@ -16,7 +16,7 @@ public class Main {
 	// Check for source file to be received as argument
 	String srcFile;
 	if(args.length != 1){
-		srcFile = "samples/reportExample.lang";
+		srcFile = "samples/sample.lang";
 	} else {
 		srcFile = args[0];
 	}

@@ -30,7 +30,7 @@ public class FlowGraph {
 		
 		this.calculateReachingDefinitions();
 		
-		System.out.println(this.calculateProgramSlice(programLabels.findByLineNumber(11)));
+		//System.out.println(this.calculateProgramSlice(programLabels.findByLineNumber(11)));
 		
 		this.calculateDetectionOfSigns();
 		
@@ -88,61 +88,7 @@ public class FlowGraph {
 		}
 	}
 	
-	private DetectionOfSignsSet getDSfromLabel(CodeLine l){
-		DetectionOfSignsSet result = new DetectionOfSignsSet();
-		// if variablehasparent  find the parent of block, and get if true or false (always true in while)
-		//                       if we're in the true block, run trueFunction(), and else, falseFunction()
-
-		// Set just contains one modified variable each time
-		Variable modifiedVariable;
-		
-		for(Variable v : l.getModifiedVariables()){
-	        // order (variableName, plus, minus, zero)
-
-			modifiedVariable = v;
-			
-			DetectionOfSignsSet kill = new DetectionOfSignsSet();
-			kill.add(new DetectionOfSigns(v.getName(), true, true, true));
-			
-			if(l.isDeclarationStatement()){ // if var declaration, variable, false, false, true
-				result.add(new DetectionOfSigns(v.getName(), false, false, true));
-			} else if(l.isReadStatement()){ // if read, variable, true, true, true
-				result.add(new DetectionOfSigns(v.getName(), true, true, true));
-			} else if(l.isAssignmentStatement()){
-				// calculate sign of statement
-				ArrayList<Tree> labelElements = l.getElements();
-
-				// if it's just a number on the right side, easy peasy
-				if(l.getUsedVariables().isEmpty()){ // no used variables, but assignment, number
-					// Find number
-					int i;
-					for(i = 0; i < labelElements.size(); i++){
-						if(labelElements.get(i).getType() == TheLangLexer.INTEGER){
-							int number = Integer.parseInt(labelElements.get(i).getText());
-							result.add(new DetectionOfSigns(v.getName(), number > 0, number < 0, number == 0));
-						}
-					}
-				} else {
-					// Find assignment, and parse expression at the right
-					int i;
-					boolean inRightSide = false;
-					for(i = 0; i < labelElements.size(); i++){
-						if(labelElements.get(i).getType() == TheLangLexer.ASSIGN){
-							inRightSide = true;
-							break;
-						}
-						if(inRightSide){
-							if()
-						}
-					}
-				}
-			}		
-		}
-
-		return result;
-	}
-	
-	private ReachingDefinitionsSet getRDfromLabel(CodeLine l){
+		private ReachingDefinitionsSet getRDfromLabel(CodeLine l){
 		ReachingDefinitionsSet result = new ReachingDefinitionsSet();
 		
 		ReachingDefinitionsSet kill = new ReachingDefinitionsSet();
@@ -233,13 +179,16 @@ public class FlowGraph {
         }
         
         while(!worklist.isEmpty()){
+        	System.out.println(worklist);
             Edge e = worklist.remove(0); // pop!
             CodeLine label1 = e.getSource();
             CodeLine label2 = e.getDestination();
             
             label1.setExitDetectionOfSigns(getDSfromLabel(label1));
-            
+
             if( ! label2.getEntryDetectionOfSigns().contains(label1.getExitDetectionOfSigns())){
+            	System.out.println("Entry:"+label2.getLineNumber()+ label2.getEntryDetectionOfSigns());
+            	System.out.println("Exit:"+label1.getLineNumber()+label1.getExitDetectionOfSigns());
                 label2.setEntryDetectionOfSigns(label2.getEntryDetectionOfSigns().addition(label1.getExitDetectionOfSigns()));
                 for(Edge f : this.programFlow){
                     if(f.getSource().equals(label2)){
@@ -247,9 +196,159 @@ public class FlowGraph {
                     }
                 }
             }
+            System.out.println("Entry2:"+label2.getLineNumber()+ label2.getEntryDetectionOfSigns());
+
         }
 	}
 
+	private DetectionOfSignsSet getDSfromLabel(CodeLine l){
+		DetectionOfSignsSet result = new DetectionOfSignsSet();
+		DetectionOfSignsSet kill = new DetectionOfSignsSet();
+		DetectionOfSignsSet gen = new DetectionOfSignsSet();
+		// if variablehasparent  find the parent of block, and get if true or false (always true in while)
+		//                       if we're in the true block, run trueFunction(), and else, falseFunction()
+
+		// Set just contains one modified variable each time
+		Variable modifiedVariable;
+		
+		for(Variable v : l.getModifiedVariables()){
+	        // order (variableName, plus, minus, zero)
+
+			modifiedVariable = v;
+			kill.add(new DetectionOfSigns(v.getName(), true, true, true));
+			
+			
+			if(l.isDeclarationStatement()){ // if var declaration, variable, false, false, true
+				result.add(new DetectionOfSigns(v.getName(), false, false, true));
+			} else if(l.isReadStatement()){ // if read, variable, true, true, true
+				result.add(new DetectionOfSigns(v.getName(), true, true, true));
+			} else if(l.isAssignmentStatement()){
+				// calculate sign of statement
+				ArrayList<Tree> labelElements = l.getElements();
+
+				// if it's just a number on the right side, easy peasy
+				if(l.getUsedVariables().isEmpty()){ // no used variables, but assignment, number
+					// Find number
+					int i;
+					int numberOfElements = 0;
+					for(i = 0; i < labelElements.size(); i++){
+						if(labelElements.get(i).getType() == TheLangLexer.ASSIGN){
+							numberOfElements = labelElements.size() - i - 2;
+							i++;
+							break;
+						}
+					}
+					for(i = 0; i < labelElements.size(); i++){
+						if(labelElements.get(i).getType() == TheLangLexer.INTEGER){
+							int number = Integer.parseInt(labelElements.get(i).getText());
+							if(numberOfElements == 1){
+								gen.add(new DetectionOfSigns(v.getName(), number > 0, false, number == 0));
+							}else if(numberOfElements == 2){
+								gen.add(new DetectionOfSigns(v.getName(), false, number > 0, number == 0));
+							}
+						}
+					}
+				} else {
+					if(l.isWhileStatement() || l.isIfStatement()){
+						return l.getEntryDetectionOfSigns();
+					}
+					// Find assignment, and parse expression at the right
+					int i; // position of first elment after assign
+					int numberOfElements = 0;
+					for(i = 0; i < labelElements.size(); i++){
+						if(labelElements.get(i).getType() == TheLangLexer.ASSIGN){
+							numberOfElements = labelElements.size() - i - 2;
+							i++;
+							break;
+						}
+					}
+					
+					if(numberOfElements == 1){
+						String nameOfVariable = labelElements.get(i).getText();
+						DetectionOfSigns dos = l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable);
+						dos.setName(v.getName());
+						gen.add(dos);
+					}else if(numberOfElements == 2){
+						String nameOfVariable = labelElements.get(i+1).getText();
+						DetectionOfSigns dos = l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable);
+						dos.setPlus(!dos.isPlus());
+						dos.setMinus(!dos.isMinus());
+						dos.setName(v.getName());
+						gen.add(dos);
+					}else if(numberOfElements == 3){
+						DetectionOfSigns dos1 = new DetectionOfSigns(v.getName(), false,false,false);
+						DetectionOfSigns dos2 = new DetectionOfSigns(v.getName(), false,false,false);
+						
+						String nameOfVariable1 = labelElements.get(i).getText();
+						String nameOfVariable2 = labelElements.get(i+2).getText();
+						if (labelElements.get(i).getType() == TheLangLexer.INTEGER){
+							dos1 = new DetectionOfSigns(v.getName(), true,false,false);
+							dos2 = l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable2);
+						}else if(labelElements.get(i+2).getType() == TheLangLexer.INTEGER){
+							dos1 = l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable1);
+							dos2 = new DetectionOfSigns(v.getName(), true,false,false);
+						}else{
+							dos1 = l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable1);
+							dos2 = l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable2);
+						}
+						
+						int operatorType = labelElements.get(i+1).getType();
+						
+						switch(operatorType){
+							case TheLangLexer.PLUS:{
+//								System.out.println(nameOfVariable1);
+//								System.out.println(dos1);
+//								System.out.println(nameOfVariable2);
+//								System.out.println(dos2);
+								DetectionOfSigns dos = new DetectionOfSigns(v.getName(),
+										(dos1.isPlus()||dos2.isPlus())
+										,(dos1.isMinus()||dos2.isMinus()),
+										((dos1.isPlus()&&dos2.isMinus())||(dos1.isMinus()&&dos2.isPlus())||(dos1.isZero()&&dos2.isZero())));
+								gen.add(dos);
+								break;
+							}
+							case TheLangLexer.MINUS:{
+								DetectionOfSigns dos = new DetectionOfSigns(v.getName(),
+										((dos2.isMinus()) ||(dos1.isPlus()))
+										,(dos1.isMinus()||dos2.isPlus()),
+										((dos1.isPlus()&&dos2.isPlus())||(dos1.isMinus()&&dos2.isMinus())||(dos1.isZero()&&dos2.isZero())));
+								gen.add(dos);
+								break;
+							}
+							case TheLangLexer.MUL:{
+								DetectionOfSigns dos = new DetectionOfSigns(v.getName(),
+										((dos1.isPlus()&&dos2.isPlus()))||(dos1.isMinus()&&dos2.isMinus())
+										,((dos1.isPlus()&&dos2.isMinus())||(dos1.isMinus()&&dos2.isPlus())),
+										(dos1.isZero()||dos2.isZero()));
+								gen.add(dos);							
+								break;
+							}
+							case TheLangLexer.DIV:{
+								if (dos2.isZero()){
+									DetectionOfSigns dos = new DetectionOfSigns(v.getName(),false,false,false);
+								}
+								else{	
+									DetectionOfSigns dos = new DetectionOfSigns(v.getName(),
+											((dos1.isPlus()&&dos2.isPlus()))||(dos1.isMinus()&&dos2.isMinus())
+											,((dos1.isPlus()&&dos2.isMinus())||(dos1.isMinus()&&dos2.isPlus())),
+											(dos1.isZero()));
+									gen.add(dos);
+									break;
+								}
+							}
+						}
+
+					}
+
+				}
+			}		
+		}
+		result = l.getEntryDetectionOfSigns().removal(kill);
+		result = result.addition(gen);
+		
+		return result;
+	}
+	
 
 
 	private void calculateLabels(){

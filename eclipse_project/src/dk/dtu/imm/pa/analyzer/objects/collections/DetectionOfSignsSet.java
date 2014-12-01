@@ -81,6 +81,10 @@ public class DetectionOfSignsSet extends ArrayList<DetectionOfSigns>{
 		boolean bothContainPlus  = false;
 		boolean bothContainMinus = false;
 		boolean bothContainZero  = false;
+		boolean bothContainPlusresult  = false;
+		boolean bothContainMinusresult = false;
+		boolean bothContainZeroresult  = false;
+		
 		
 		for(DetectionOfSigns ds : this ){
 			if(detectionOfSigns.getName().equals(ds.getName())){
@@ -88,13 +92,13 @@ public class DetectionOfSignsSet extends ArrayList<DetectionOfSigns>{
 				bothContainMinus = detectionOfSigns.isMinus() && ds.isMinus();
 				bothContainZero  = detectionOfSigns.isZero()  && ds.isZero();
 				
-				bothContainPlus  = bothContainPlus  == detectionOfSigns.isPlus();
-				bothContainMinus = bothContainMinus == detectionOfSigns.isMinus();
-				bothContainZero  = bothContainZero  == detectionOfSigns.isZero();
+				bothContainPlusresult  = bothContainPlus  == detectionOfSigns.isPlus();
+				bothContainMinusresult = bothContainMinus == detectionOfSigns.isMinus();
+				bothContainZeroresult  = bothContainZero  == detectionOfSigns.isZero();
 			}
 		}
 		
-		result = bothContainPlus && bothContainMinus && bothContainZero;
+		result = bothContainPlusresult && bothContainMinusresult && bothContainZeroresult;
 		
 		return result;
 	}
