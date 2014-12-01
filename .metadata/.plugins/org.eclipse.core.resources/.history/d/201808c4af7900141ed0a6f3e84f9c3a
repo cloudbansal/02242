@@ -35,9 +35,7 @@ public class FlowGraph {
 		
 		this.generateArrayUsage();
 	
-		//this.calculateBufferOverflow("DS");
-		
-		this.calculateBufferOverflow("IA");
+		this.calculateBufferOverflow("DS");
 				
 //		this.calculateDetectionOfSigns();
 		
@@ -101,14 +99,6 @@ public class FlowGraph {
 			// We calculate first the DS
 			this.calculateDetectionOfSigns();
 			
-		    System.out.println("Detection of Sign set, per label:");
-		    for(CodeLine cl : programLabels){
-		    	System.out.println(cl);
-		    	System.out.println("entry: " + cl.getEntryDetectionOfSigns() + " \n exit: " + cl.getExitDetectionOfSigns());
-		    	System.out.println();
-		    	System.out.println();
-		    }
-			
 			for(CodeLine l : programLabels){
 				for(Variable v : l.getUsedVariables()){
 					if(v.isArray()){
@@ -153,14 +143,6 @@ public class FlowGraph {
 				if(v.isArray()){
 					max = v.getArrayLength() - 1;
 					this.calculateIntervalAnalysis(min, max);
-					
-					System.out.println("Interval Analysis set, per label for array: " + v.getName());
-				    for(CodeLine cl : programLabels){
-				    	System.out.println(cl);
-				    	System.out.println("entry: " + cl.getEntryIntervalAnalysis() + " \n exit: " + cl.getExitIntervalAnalysis());
-				    	System.out.println();
-				    	System.out.println();
-				    }
 					
 					for(CodeLine l : programLabels){
 						for(ArrayUse au : v.getArrayUsage()){
