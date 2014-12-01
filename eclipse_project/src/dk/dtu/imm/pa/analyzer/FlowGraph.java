@@ -273,11 +273,11 @@ public class FlowGraph {
 			case TheLangLexer.EQ: {
 				var1plus  = firstOperatingDos.isPlus() && secondOperatingDos.isPlus();
 				var1minus = firstOperatingDos.isMinus() && secondOperatingDos.isMinus(); 
-				var1zero  = firstOperatingDos.isMinus() && secondOperatingDos.isZero();
+				var1zero  = firstOperatingDos.isZero() && secondOperatingDos.isZero();
 				
 				var2plus  = firstOperatingDos.isPlus() && secondOperatingDos.isPlus(); 
 				var2minus = firstOperatingDos.isMinus() && secondOperatingDos.isMinus(); 
-				var2zero  = firstOperatingDos.isMinus() && secondOperatingDos.isZero();
+				var2zero  = firstOperatingDos.isZero() && secondOperatingDos.isZero();
 				break;
 			}
 			case TheLangLexer.NEQ: {
@@ -429,26 +429,26 @@ public class FlowGraph {
 		
 		switch(be.getOperator()){
 			case TheLangLexer.EQ: {
-				var1plus  = firstOperatingDos.isPlus() && secondOperatingDos.isPlus();
-				var1minus = firstOperatingDos.isMinus() && secondOperatingDos.isMinus(); 
-				var1zero  = firstOperatingDos.isMinus() && secondOperatingDos.isZero();
+				var1plus  = firstOperatingDos.isPlus();
+				var1minus = firstOperatingDos.isMinus(); 
+				var1zero  = firstOperatingDos.isZero() && (secondOperatingDos.isPlus() || secondOperatingDos.isMinus());
 				
 				var2plus  = firstOperatingDos.isPlus() && secondOperatingDos.isPlus(); 
 				var2minus = firstOperatingDos.isMinus() && secondOperatingDos.isMinus(); 
-				var2zero  = firstOperatingDos.isMinus() && secondOperatingDos.isZero();
+				var2zero  = firstOperatingDos.isZero() && (secondOperatingDos.isPlus() || secondOperatingDos.isMinus());
 				break;
 			}
 			case TheLangLexer.NEQ: {
-				var1plus  = firstOperatingDos.isPlus();
+				var1plus  = firstOperatingDos.isPlus() && secondOperatingDos.isPlus();
 				var1minus = firstOperatingDos.isMinus();
-				var1zero  = firstOperatingDos.isZero() && (secondOperatingDos.isMinus() || secondOperatingDos.isPlus());
+				var1zero  = firstOperatingDos.isZero() && secondOperatingDos.isZero();
 				
-				var2plus  = secondOperatingDos.isPlus(); 
-				var2minus = secondOperatingDos.isMinus();
-				var2zero  = secondOperatingDos.isZero() && (firstOperatingDos.isMinus() || firstOperatingDos.isPlus());			
+				var2plus  = firstOperatingDos.isPlus() && secondOperatingDos.isPlus(); 
+				var2minus = firstOperatingDos.isMinus() && secondOperatingDos.isMinus();
+				var2zero  = firstOperatingDos.isZero() && secondOperatingDos.isZero();			
 				break;
 			}
-			case TheLangLexer.GT: {
+			case TheLangLexer.LE: {
 				var1plus  = firstOperatingDos.isPlus();
 				var1minus = firstOperatingDos.isMinus() && secondOperatingDos.isMinus();
 				var1zero  = firstOperatingDos.isZero() && secondOperatingDos.isMinus();
@@ -458,7 +458,7 @@ public class FlowGraph {
 				var2zero  = firstOperatingDos.isPlus() && secondOperatingDos.isZero();
 				break;
 			}
-			case TheLangLexer.GE: {
+			case TheLangLexer.LT: {
 				var1plus  = firstOperatingDos.isPlus();
 				var1minus = firstOperatingDos.isMinus() && secondOperatingDos.isMinus();
 				var1zero  = firstOperatingDos.isZero() && (secondOperatingDos.isPlus() || secondOperatingDos.isZero());
@@ -468,7 +468,7 @@ public class FlowGraph {
 				var2zero  = (firstOperatingDos.isPlus() || firstOperatingDos.isZero()) && secondOperatingDos.isZero();
 				break;
 			}
-			case TheLangLexer.LT: {
+			case TheLangLexer.GE: {
 				var1plus  = firstOperatingDos.isPlus() && secondOperatingDos.isPlus();
 				var1minus = firstOperatingDos.isMinus();
 				var1zero  = firstOperatingDos.isZero() && secondOperatingDos.isPlus();
@@ -478,7 +478,7 @@ public class FlowGraph {
 				var2zero  = firstOperatingDos.isMinus() && secondOperatingDos.isZero();
 				break;
 			}
-			case TheLangLexer.LE: {
+			case TheLangLexer.GT: {
 				var1plus  = secondOperatingDos.isPlus() && firstOperatingDos.isPlus();;
 				var1minus = firstOperatingDos.isMinus();
 				var1zero  = firstOperatingDos.isZero() && (secondOperatingDos.isPlus() || secondOperatingDos.isZero());
