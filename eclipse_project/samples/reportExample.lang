@@ -1,14 +1,15 @@
 program
 int x;
 int y;
-int z;
-x := 0;
+int A[5];
+x := 3;
 y := x + 10;
-z := y + 2;
+A[1] := y + 2;
 while (x < 10)
 do
 x := x + 1;
-z := x;
+A[2] := x;
 od
 write x;
+x:=5;
 end

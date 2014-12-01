@@ -16,10 +16,6 @@ public class DetectionOfSignsSet extends ArrayList<DetectionOfSigns>{
 	public DetectionOfSignsSet() {
 		super();
 	}
-	
-	public boolean add(DetectionOfSigns ds){
-		return super.add(new DetectionOfSigns(ds));
-	}
 
 	public DetectionOfSignsSet addition(DetectionOfSignsSet detectionOfSignsSet){
 		DetectionOfSignsSet newDetectionOfSignsSet = new DetectionOfSignsSet(this);

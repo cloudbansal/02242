@@ -326,7 +326,23 @@ public class FlowGraph {
 										,(dos1.isMinus()||dos2.isMinus()),
 										((dos1.isPlus()&&dos2.isMinus())||(dos1.isMinus()&&dos2.isPlus())||(dos1.isZero()&&dos2.isZero())));
 								gen.add(dos);
+								for(CodeLine cl : program){
+							    	if(cl.getLineNumber() == 4){
+								    	System.out.println("before entry: " + cl.getEntryDetectionOfSigns() + " \n exit: " + cl.getExitDetectionOfSigns());
+								    	System.out.println();
+								    	System.out.println();
+
+							    	}
+							    }
 								result = result.addition(gen);
+								for(CodeLine cl : program){
+							    	if(cl.getLineNumber() == 4){
+								    	System.out.println("after entry: " + cl.getEntryDetectionOfSigns() + " \n exit: " + cl.getExitDetectionOfSigns());
+								    	System.out.println();
+								    	System.out.println();
+
+							    	}
+								}
 								gen.clear();
 								
 								break;

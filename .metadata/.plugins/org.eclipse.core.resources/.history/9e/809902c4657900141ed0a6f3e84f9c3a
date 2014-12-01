@@ -2,6 +2,8 @@ package dk.dtu.imm.pa.analyzer.objects.collections;
 
 import java.util.ArrayList;
 
+import dk.dtu.imm.pa.analyzer.objects.CodeLine;
+
 public class DetectionOfSignsSet extends ArrayList<DetectionOfSigns>{
 	
 	/**
@@ -16,16 +18,13 @@ public class DetectionOfSignsSet extends ArrayList<DetectionOfSigns>{
 	public DetectionOfSignsSet() {
 		super();
 	}
-	
-	public boolean add(DetectionOfSigns ds){
-		return super.add(new DetectionOfSigns(ds));
-	}
 
 	public DetectionOfSignsSet addition(DetectionOfSignsSet detectionOfSignsSet){
 		DetectionOfSignsSet newDetectionOfSignsSet = new DetectionOfSignsSet(this);
 		for(DetectionOfSigns ds : detectionOfSignsSet) {
 			if(newDetectionOfSignsSet.containsVariableName(ds.getName())){
 				newDetectionOfSignsSet.getByVariableName(ds.getName()).add(ds);
+				
 			} else {
 				
 				newDetectionOfSignsSet.add(ds);
@@ -64,7 +63,7 @@ public class DetectionOfSignsSet extends ArrayList<DetectionOfSigns>{
 	public DetectionOfSigns getByVariableName(String name){
 		for(DetectionOfSigns ds : this){
 			if(ds.getName().equals(name)){
-				return ds;
+				return new DetectionOfSigns(ds);
 			}
 		}
 		return null;

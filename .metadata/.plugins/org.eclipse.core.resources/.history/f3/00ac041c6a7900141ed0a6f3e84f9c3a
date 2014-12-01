@@ -204,15 +204,6 @@ public class FlowGraph {
 	}
 
 	private DetectionOfSignsSet getDSfromLabel(CodeLine l){
-		System.out.println("Detection of Sign set, per label:");
-	    for(CodeLine cl : program){
-	    	if(cl.getLineNumber() == 4){
-		    	System.out.println("entry: " + cl.getEntryDetectionOfSigns() + " \n exit: " + cl.getExitDetectionOfSigns());
-		    	System.out.println();
-		    	System.out.println();
-
-	    	}
-	    }
 		DetectionOfSignsSet result = new DetectionOfSignsSet().addition(l.getEntryDetectionOfSigns());		
 		DetectionOfSignsSet kill = new DetectionOfSignsSet();
 		DetectionOfSignsSet gen = new DetectionOfSignsSet();
