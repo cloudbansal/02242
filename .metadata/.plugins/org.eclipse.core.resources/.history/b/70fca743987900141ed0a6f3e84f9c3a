@@ -202,10 +202,10 @@ public class FlowGraph {
 			
 			for(Variable v : l.getModifiedVariables()){
 				kill.add(new ReachingDefinition(v.getName(), -1));
-				result = result.removal(kill);
+				result.removal(kill);
 				kill.clear();
 				gen.add(new ReachingDefinition(v.getName(), l.getLineNumber()));
-				result = result.addition(gen);
+				result.addition(gen);
 				gen.clear();
 			}
 			return result;
@@ -643,7 +643,8 @@ public class FlowGraph {
 		for(Variable v : l.getModifiedVariables()){
 	        // order (variableName, plus, minus, zero)
 
-			boolean isArray = v.isArray();
+			modifiedVariable = v.getName();
+			boolean isArray = modifiedVariable.equals(modifiedVariable.toUpperCase());
 			//Only kill if its not an array
 			if(!isArray){
 				kill.add(new DetectionOfSigns(v.getName(), true, true, true));

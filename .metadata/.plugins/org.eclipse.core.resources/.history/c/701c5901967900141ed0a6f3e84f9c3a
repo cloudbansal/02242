@@ -189,12 +189,13 @@ public class FlowGraph {
 			ReachingDefinitionsSet kill = new ReachingDefinitionsSet();
 			ReachingDefinitionsSet gen  = new ReachingDefinitionsSet();
 			for(Variable v : l.getModifiedVariables()){
-				boolean isArray = v.isArray();
+				String modifiedVariable = v.getName();
+				boolean isArray = modifiedVariable.equals(modifiedVariable.toUpperCase());
 				//Only kill if its not an array
 				if(!isArray){
 					for(CodeLine tempLabel : this.programLabels){
 						kill.add(new ReachingDefinition(v.getName(), tempLabel.getLineNumber()));
-						result = result.removal(kill);
+						result.removal(kill);
 						kill.clear();
 					}
 				}
@@ -202,10 +203,10 @@ public class FlowGraph {
 			
 			for(Variable v : l.getModifiedVariables()){
 				kill.add(new ReachingDefinition(v.getName(), -1));
-				result = result.removal(kill);
+				result.removal(kill);
 				kill.clear();
 				gen.add(new ReachingDefinition(v.getName(), l.getLineNumber()));
-				result = result.addition(gen);
+				result.addition(gen);
 				gen.clear();
 			}
 			return result;
@@ -222,18 +223,20 @@ public class FlowGraph {
 			
 			if( ! result.contains(l) ) {
 				CodeLine parentLabel = null;
-				
-				if(l.getLoopParent() != null)
+								
+				if(l.getLoopParent() != null){
 					parentLabel = l.getLoopParent();
-				else if (l.getIfParent() != null)
+				}else if (l.getIfParent() != null){
 					parentLabel = l.getIfParent();
-					
+				}
 				if(parentLabel != null)
 					worklist.add(parentLabel);
 				
 				result.add(l);
 				
 				LabelSet slice = calculateAuxSlice(l);
+				System.out.println("aux"+slice);
+
 				
 				for(CodeLine labelInSlice : slice){
 					if( ! result.contains(labelInSlice)){
@@ -643,7 +646,8 @@ public class FlowGraph {
 		for(Variable v : l.getModifiedVariables()){
 	        // order (variableName, plus, minus, zero)
 
-			boolean isArray = v.isArray();
+			modifiedVariable = v.getName();
+			boolean isArray = modifiedVariable.equals(modifiedVariable.toUpperCase());
 			//Only kill if its not an array
 			if(!isArray){
 				kill.add(new DetectionOfSigns(v.getName(), true, true, true));

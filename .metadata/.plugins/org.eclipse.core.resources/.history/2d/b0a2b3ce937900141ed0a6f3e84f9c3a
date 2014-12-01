@@ -32,8 +32,8 @@ public class FlowGraph {
 		this.calculateReachingDefinitions();
 		
 		this.generateArrayUsage();
-	
-		this.calculateBufferOverflow("DS");
+		
+		System.out.println(this.calculateBufferOverflow("DS"));
 				
 //		this.calculateDetectionOfSigns();
 		
@@ -91,7 +91,7 @@ public class FlowGraph {
 		}
 	}
 	
-	public void calculateBufferOverflow(String algorithm){
+	public LabelSet calculateBufferOverflow(String algorithm){
 		LabelSet result = new LabelSet();
 		if ("DS".equalsIgnoreCase(algorithm)){
 			// We calculate first the DS
@@ -138,15 +138,8 @@ public class FlowGraph {
 		} else if ("IA".equalsIgnoreCase(algorithm)){
 			
 		}
-				
-		for(CodeLine l: result){
-			System.out.println("!! Buffer overflow found at line " + l.getLineNumber());
-			System.out.println(" |- Corresponding program slice is: ");
-			for(CodeLine slice: calculateProgramSlice(l)){
-				System.out.println(slice);
-			}
-			
-		}
+		
+		return result;
 	}
 	
 	private void calculateReachingDefinitions(){ 
@@ -189,12 +182,13 @@ public class FlowGraph {
 			ReachingDefinitionsSet kill = new ReachingDefinitionsSet();
 			ReachingDefinitionsSet gen  = new ReachingDefinitionsSet();
 			for(Variable v : l.getModifiedVariables()){
-				boolean isArray = v.isArray();
+				String modifiedVariable = v.getName();
+				boolean isArray = modifiedVariable.equals(modifiedVariable.toUpperCase());
 				//Only kill if its not an array
 				if(!isArray){
 					for(CodeLine tempLabel : this.programLabels){
 						kill.add(new ReachingDefinition(v.getName(), tempLabel.getLineNumber()));
-						result = result.removal(kill);
+						result.removal(kill);
 						kill.clear();
 					}
 				}
@@ -202,10 +196,10 @@ public class FlowGraph {
 			
 			for(Variable v : l.getModifiedVariables()){
 				kill.add(new ReachingDefinition(v.getName(), -1));
-				result = result.removal(kill);
+				result.removal(kill);
 				kill.clear();
 				gen.add(new ReachingDefinition(v.getName(), l.getLineNumber()));
-				result = result.addition(gen);
+				result.addition(gen);
 				gen.clear();
 			}
 			return result;
@@ -280,7 +274,7 @@ public class FlowGraph {
         }
         
         while(!worklist.isEmpty()){
-//        	System.out.println(worklist);
+        	System.out.println(worklist);
         	Edge e = worklist.remove(0); // pop!
             CodeLine label1 = e.getSource();
             CodeLine label2 = e.getDestination();
@@ -643,7 +637,8 @@ public class FlowGraph {
 		for(Variable v : l.getModifiedVariables()){
 	        // order (variableName, plus, minus, zero)
 
-			boolean isArray = v.isArray();
+			modifiedVariable = v.getName();
+			boolean isArray = modifiedVariable.equals(modifiedVariable.toUpperCase());
 			//Only kill if its not an array
 			if(!isArray){
 				kill.add(new DetectionOfSigns(v.getName(), true, true, true));

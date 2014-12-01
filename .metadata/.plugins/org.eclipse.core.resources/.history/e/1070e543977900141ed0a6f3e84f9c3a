@@ -79,9 +79,7 @@ public class ReachingDefinitionsSet extends ArrayList<ReachingDefinition> {
 		
 		for(ReachingDefinition rd : this){
 			if(rd.getName().equals(v.getName())){
-				if(rd.getLine() != -1){
-					result.add(rd.getLine());
-				}
+				result.add(rd.getLine());
 			}
 		}
 		

@@ -2,9 +2,9 @@ program
 int x;
 int y;
 int A[5];
-x := 3;
+x := -3;
 y := x + 10;
-A[1] := y + 2;
+A[x] := y + 2;
 while (x < 10)
 do
 x := x + 1;
