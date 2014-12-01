@@ -370,23 +370,13 @@ public class FlowGraph {
 							if(numberOfElements == 1){
 								if(number < max && number > min){
 									gen.add(new IntervalAnalysis(v.getName(), (double) number, (double) number));
-								} else if(number > max){
-									gen.add(new IntervalAnalysis(v.getName(), (double) max + 1, Double.POSITIVE_INFINITY));
-								} else if(number < min) {
-									gen.add(new IntervalAnalysis(v.getName(), Double.NEGATIVE_INFINITY, (double) min - 1));		
-								}
-								
+								} else if(number>max){
+									gen.add(new IntervalAnalysis(v.getName(), (double) number + 1, Double.POSITIVE_INFINITY));
+								} else if(number>)
 								result = result.addition(gen);
 								gen.clear();
 							}else if(numberOfElements == 2){
-								if(-number < max && -number > min){
-									gen.add(new IntervalAnalysis(v.getName(), (double) -number, (double) -number));
-								} else if(-number > max){
-									gen.add(new IntervalAnalysis(v.getName(), (double) max + 1, Double.POSITIVE_INFINITY));
-								} else if(-number < min) {
-									gen.add(new IntervalAnalysis(v.getName(), Double.NEGATIVE_INFINITY, (double) min - 1));		
-								}
-								
+								gen.add(new IntervalAnalysis(v.getName(), (double) -number, (double) -number));
 								result = result.addition(gen);
 								gen.clear();
 							}
@@ -410,341 +400,91 @@ public class FlowGraph {
 					
 					if(numberOfElements == 1){
 						String nameOfVariable = labelElements.get(i).getText();
-						IntervalAnalysis ias = new IntervalAnalysis(l.getEntryIntervalAnalysis().getByVariableName(nameOfVariable));
-						gen.add(new IntervalAnalysis(v.getName(),ias.getFirstElement(),ias.getLastElement()));
+						DetectionOfSigns dos = new DetectionOfSigns(l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable));
+						gen.add(new DetectionOfSigns(v.getName(),dos.isPlus(),dos.isMinus(),dos.isZero()));
 						result = result.addition(gen);
 						gen.clear();
 					}else if(numberOfElements == 2){
 						String nameOfVariable = labelElements.get(i+1).getText();
-						IntervalAnalysis ias = new IntervalAnalysis(l.getEntryIntervalAnalysis().getByVariableName(nameOfVariable));
-						
-						Double firstElement = (double) - ias.getFirstElement();
-						Double lastElement  = (double) - ias.getLastElement();
-
-						if(firstElement < min){
-							firstElement = Double.NEGATIVE_INFINITY;
-						}
-						if(lastElement > max){
-							lastElement = Double.POSITIVE_INFINITY;
-						}
-						
-						gen.add(new IntervalAnalysis(v.getName(),firstElement,lastElement));
-						
+						DetectionOfSigns dos = new DetectionOfSigns(l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable));
+						gen.add(new DetectionOfSigns(v.getName(),!dos.isPlus(),!dos.isMinus(),dos.isZero()));
 						result = result.addition(gen);
 						gen.clear();
 					}else if(numberOfElements == 3){
-						IntervalAnalysis ias1 = new IntervalAnalysis(v.getName(), Double.NaN, Double.NaN);
-						IntervalAnalysis ias2 = new IntervalAnalysis(v.getName(), Double.NaN, Double.NaN);
+						DetectionOfSigns dos1 = new DetectionOfSigns(v.getName(), false,false,false);
+						DetectionOfSigns dos2 = new DetectionOfSigns(v.getName(), false,false,false);
 						
 						String nameOfVariable1 = labelElements.get(i).getText();
 						String nameOfVariable2 = labelElements.get(i+2).getText();
 						if (labelElements.get(i).getType() == TheLangLexer.INTEGER){
-							Double value = Double.parseDouble(labelElements.get(i).getText());
-							
-							ias1 = new IntervalAnalysis(v.getName(), value, value);
-							ias2 = new IntervalAnalysis(l.getEntryIntervalAnalysis().getByVariableName(nameOfVariable2));
+							dos1 = new DetectionOfSigns(v.getName(), true,false,false);
+							dos2 = new DetectionOfSigns(l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable2));
 						}else if(labelElements.get(i+2).getType() == TheLangLexer.INTEGER){
-							Double value = Double.parseDouble(labelElements.get(i+2).getText());
-
-							ias1 = new IntervalAnalysis(l.getEntryIntervalAnalysis().getByVariableName(nameOfVariable1));
-							ias2 = new IntervalAnalysis(v.getName(), value, value);
+							dos1 = new DetectionOfSigns(l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable1));
+							dos2 = new DetectionOfSigns(v.getName(), true,false,false);
 						}else{
-							ias1 = new IntervalAnalysis(l.getEntryIntervalAnalysis().getByVariableName(nameOfVariable1));
-							ias2 = new IntervalAnalysis(l.getEntryIntervalAnalysis().getByVariableName(nameOfVariable2));
+							dos1 = new DetectionOfSigns(l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable1));
+							dos2 = new DetectionOfSigns(l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable2));
 						}
 						
 						int operatorType = labelElements.get(i+1).getType();
 						
-						IntervalAnalysis ias = new IntervalAnalysis(v.getName(), Double.NaN, Double.NaN);
-						
 						switch(operatorType){
 							case TheLangLexer.PLUS:{
-								
-								if(ias1.getFirstElement() == Double.NEGATIVE_INFINITY || ias2.getFirstElement() == Double.NEGATIVE_INFINITY){
-									ias.setFirstElement(Double.NEGATIVE_INFINITY);
-								} else if (ias1.getFirstElement() + ias2.getFirstElement() < min){
-									ias.setFirstElement(Double.NEGATIVE_INFINITY);
-								} else if (ias1.getFirstElement() + ias2.getFirstElement() > max){
-									ias.setFirstElement((double) max + 1);
-								} else {
-									ias.setFirstElement(ias1.getFirstElement() + ias2.getFirstElement());
-								}
-								
-								if(ias1.getLastElement() == Double.POSITIVE_INFINITY || ias2.getLastElement() == Double.POSITIVE_INFINITY){
-								    ias.setLastElement(Double.POSITIVE_INFINITY);
-								} else if (ias1.getLastElement() + ias2.getLastElement() > max){
-								    ias.setLastElement(Double.POSITIVE_INFINITY);
-								} else if (ias1.getLastElement() + ias2.getLastElement() < min){
-								    ias.setLastElement((double) min - 1);
-								} else {
-								    ias.setLastElement(ias1.getLastElement() + ias2.getLastElement());
-								}
-
-								gen.add(ias);
+								DetectionOfSigns dos = new DetectionOfSigns(v.getName(),
+										(dos1.isPlus()||dos2.isPlus())
+										,(dos1.isMinus()||dos2.isMinus()),
+										((dos1.isPlus()&&dos2.isMinus())||(dos1.isMinus()&&dos2.isPlus())||(dos1.isZero()&&dos2.isZero())));
+								gen.add(dos);
 								result = result.addition(gen);
 								gen.clear();
 								
 								break;
 							}
 							case TheLangLexer.MINUS:{
-								if(ias1.getFirstElement() == Double.NEGATIVE_INFINITY || ias2.getFirstElement() == Double.NEGATIVE_INFINITY){
-								    ias.setFirstElement(Double.NEGATIVE_INFINITY);
-								} else if (ias1.getFirstElement() - ias2.getFirstElement() < min){
-								    ias.setFirstElement(Double.NEGATIVE_INFINITY);
-								} else if (ias1.getFirstElement() - ias2.getFirstElement() > max){
-								    ias.setFirstElement((double) max + 1);
-								} else {
-								    ias.setFirstElement(ias1.getFirstElement() - ias2.getFirstElement());
-								}
-
-								if(ias1.getLastElement() == Double.POSITIVE_INFINITY || ias2.getLastElement() == Double.POSITIVE_INFINITY){
-								    ias.setLastElement(Double.POSITIVE_INFINITY);
-								} else if (ias1.getLastElement() - ias2.getLastElement() > max){
-								    ias.setLastElement(Double.POSITIVE_INFINITY);
-								} else if (ias1.getLastElement() - ias2.getLastElement() < min){
-								    ias.setLastElement((double) min - 1);
-								} else {
-								    ias.setLastElement(ias1.getLastElement() - ias2.getLastElement());
-								}
-								
-								gen.add(ias);
+								DetectionOfSigns dos = new DetectionOfSigns(v.getName(),
+										((dos2.isMinus()) ||(dos1.isPlus()))
+										,(dos1.isMinus()||dos2.isPlus()),
+										((dos1.isPlus()&&dos2.isPlus())||(dos1.isMinus()&&dos2.isMinus())||(dos1.isZero()&&dos2.isZero())));
+								gen.add(dos);
 								result = result.addition(gen);
 								gen.clear();
 								break;
 							}
 							case TheLangLexer.MUL:{
-								double 	f1l1,
-										f1l2,
-										f2l1,
-										f2l2;
-								
-								if(ias1.getFirstElement() == 0.0 || ias2.getFirstElement() == 0.0){
-									f1l1 = 0;
-								} else if ((ias1.getFirstElement() > 0 && ias2.getFirstElement() == Double.NEGATIVE_INFINITY) ||
-										(ias1.getFirstElement() < 0 && ias2.getFirstElement() == Double.POSITIVE_INFINITY) ||
-										(ias2.getFirstElement() > 0 && ias1.getFirstElement() == Double.NEGATIVE_INFINITY) ||
-										(ias2.getFirstElement() < 0 && ias1.getFirstElement() == Double.POSITIVE_INFINITY))
-								{
-									f1l1 = Double.NEGATIVE_INFINITY;
-								} else if ((ias1.getFirstElement() < 0 && ias2.getFirstElement() == Double.NEGATIVE_INFINITY) ||
-										(ias1.getFirstElement() > 0 && ias2.getFirstElement() == Double.POSITIVE_INFINITY) ||
-										(ias2.getFirstElement() < 0 && ias1.getFirstElement() == Double.NEGATIVE_INFINITY) ||
-										(ias2.getFirstElement() > 0 && ias1.getFirstElement() == Double.POSITIVE_INFINITY))
-								{
-									f1l1 = Double.POSITIVE_INFINITY;
-								} else if (ias1.getFirstElement() * ias2.getFirstElement() < min){
-									f1l1 = Double.NEGATIVE_INFINITY;
-								} else if (ias1.getFirstElement() * ias2.getFirstElement() > max){
-									f1l1 = Double.POSITIVE_INFINITY;
-								} else {
-									f1l1 = ias1.getFirstElement() * ias2.getFirstElement();
-								}
-								
-								if(ias1.getFirstElement() == 0.0 || ias2.getLastElement() == 0.0){
-								    f1l2 = 0;
-								} else if ((ias1.getFirstElement() > 0 && ias2.getLastElement() == Double.NEGATIVE_INFINITY) ||
-								        (ias1.getFirstElement() < 0 && ias2.getLastElement() == Double.POSITIVE_INFINITY) ||
-								        (ias2.getLastElement() > 0 && ias1.getFirstElement() == Double.NEGATIVE_INFINITY) ||
-								        (ias2.getLastElement() < 0 && ias1.getFirstElement() == Double.POSITIVE_INFINITY))
-								{
-								    f1l2 = Double.NEGATIVE_INFINITY;
-								} else if ((ias1.getFirstElement() < 0 && ias2.getLastElement() == Double.NEGATIVE_INFINITY) ||
-								        (ias1.getFirstElement() > 0 && ias2.getLastElement() == Double.POSITIVE_INFINITY) ||
-								        (ias2.getLastElement() < 0 && ias1.getFirstElement() == Double.NEGATIVE_INFINITY) ||
-								        (ias2.getLastElement() > 0 && ias1.getFirstElement() == Double.POSITIVE_INFINITY))
-								{
-								    f1l2 = Double.POSITIVE_INFINITY;
-								} else if (ias1.getFirstElement() * ias2.getLastElement() < min){
-								    f1l2 = Double.NEGATIVE_INFINITY;
-								} else if (ias1.getFirstElement() * ias2.getLastElement() > max){
-								    f1l2 = Double.POSITIVE_INFINITY;
-								} else {
-								    f1l2 = ias1.getFirstElement() * ias2.getLastElement();
-								}
-								
-								if(ias1.getLastElement() == 0.0 || ias2.getFirstElement() == 0.0){
-								    f2l1 = 0;
-								} else if ((ias1.getLastElement() > 0 && ias2.getFirstElement() == Double.NEGATIVE_INFINITY) ||
-								        (ias1.getLastElement() < 0 && ias2.getFirstElement() == Double.POSITIVE_INFINITY) ||
-								        (ias2.getFirstElement() > 0 && ias1.getLastElement() == Double.NEGATIVE_INFINITY) ||
-								        (ias2.getFirstElement() < 0 && ias1.getLastElement() == Double.POSITIVE_INFINITY))
-								{
-								    f2l1 = Double.NEGATIVE_INFINITY;
-								} else if ((ias1.getLastElement() < 0 && ias2.getFirstElement() == Double.NEGATIVE_INFINITY) ||
-								        (ias1.getLastElement() > 0 && ias2.getFirstElement() == Double.POSITIVE_INFINITY) ||
-								        (ias2.getFirstElement() < 0 && ias1.getLastElement() == Double.NEGATIVE_INFINITY) ||
-								        (ias2.getFirstElement() > 0 && ias1.getLastElement() == Double.POSITIVE_INFINITY))
-								{
-								    f2l1 = Double.POSITIVE_INFINITY;
-								} else if (ias1.getLastElement() * ias2.getFirstElement() < min){
-								    f2l1 = Double.NEGATIVE_INFINITY;
-								} else if (ias1.getLastElement() * ias2.getFirstElement() > max){
-								    f2l1 = Double.POSITIVE_INFINITY;
-								} else {
-								    f2l1 = ias1.getLastElement() * ias2.getFirstElement();
-								}
-								
-								if(ias1.getLastElement() == 0.0 || ias2.getLastElement() == 0.0){
-								    f2l2 = 0;
-								} else if ((ias1.getLastElement() > 0 && ias2.getLastElement() == Double.NEGATIVE_INFINITY) ||
-								        (ias1.getLastElement() < 0 && ias2.getLastElement() == Double.POSITIVE_INFINITY) ||
-								        (ias2.getLastElement() > 0 && ias1.getLastElement() == Double.NEGATIVE_INFINITY) ||
-								        (ias2.getLastElement() < 0 && ias1.getLastElement() == Double.POSITIVE_INFINITY))
-								{
-								    f2l2 = Double.NEGATIVE_INFINITY;
-								} else if ((ias1.getLastElement() < 0 && ias2.getLastElement() == Double.NEGATIVE_INFINITY) ||
-								        (ias1.getLastElement() > 0 && ias2.getLastElement() == Double.POSITIVE_INFINITY) ||
-								        (ias2.getLastElement() < 0 && ias1.getLastElement() == Double.NEGATIVE_INFINITY) ||
-								        (ias2.getLastElement() > 0 && ias1.getLastElement() == Double.POSITIVE_INFINITY))
-								{
-								    f2l2 = Double.POSITIVE_INFINITY;
-								} else if (ias1.getLastElement() * ias2.getLastElement() < min){
-								    f2l2 = Double.NEGATIVE_INFINITY;
-								} else if (ias1.getLastElement() * ias2.getLastElement() > max){
-								    f2l2 = Double.POSITIVE_INFINITY;
-								} else {
-								    f2l2 = ias1.getLastElement() * ias2.getLastElement();
-								}
-								
-								ias.setFirstElement(Math.min( Math.min(f2l1, f2l2), Math.min(f1l1, f1l2) ));
-								ias.setLastElement(Math.max( Math.max(f2l1, f2l2), Math.max(f1l1, f1l2) ));
-								
-								gen.add(ias);
+								DetectionOfSigns dos = new DetectionOfSigns(v.getName(),
+										((dos1.isPlus()&&dos2.isPlus()))||(dos1.isMinus()&&dos2.isMinus())
+										,((dos1.isPlus()&&dos2.isMinus())||(dos1.isMinus()&&dos2.isPlus())),
+										(dos1.isZero()||dos2.isZero()));
+								gen.add(dos);
 								result = result.addition(gen);
 								gen.clear();
 								break;
 							}
 							case TheLangLexer.DIV:{
-								double 	f1l1,
-										f1l2,
-										f2l1,
-										f2l2;
-								
-								if(ias2.getFirstElement() <= 0.0 && ias2.getLastElement() >= 0.0){
-									ias.setFirstElement(Double.NaN);
-									ias.setLastElement(Double.NaN);
-								} else {
-									if ((ias1.getFirstElement() == Double.POSITIVE_INFINITY && ias2.getFirstElement() == Double.POSITIVE_INFINITY)
-										|| (ias1.getFirstElement() == Double.NEGATIVE_INFINITY && ias2.getFirstElement() == Double.NEGATIVE_INFINITY))
-									{
-										f1l1 = 1;
-									} else if ((ias1.getFirstElement() == Double.NEGATIVE_INFINITY && ias2.getFirstElement() == Double.POSITIVE_INFINITY)
-											|| (ias1.getFirstElement() == Double.POSITIVE_INFINITY && ias2.getFirstElement() == Double.NEGATIVE_INFINITY))
-									{
-										f1l1 = -1;
-									} else if (ias1.getFirstElement() == 0.0
-											|| ias2.getFirstElement() == Double.POSITIVE_INFINITY
-											|| ias2.getFirstElement() == Double.NEGATIVE_INFINITY)
-									{
-										f1l1 = 0;
-									} else if (ias1.getFirstElement() == Double.NEGATIVE_INFINITY)
-									{
-										f1l1 = Double.NEGATIVE_INFINITY;
-									} else if (ias1.getFirstElement() == Double.POSITIVE_INFINITY)
-									{
-										f1l1 = Double.POSITIVE_INFINITY;
-									} else if (ias1.getFirstElement() / ias2.getFirstElement() < min){
-										f1l1 = Double.NEGATIVE_INFINITY;
-									} else if (ias1.getFirstElement() / ias2.getFirstElement() > max){
-										f1l1 = Double.POSITIVE_INFINITY;
-									} else {
-										f1l1 = (int) (ias1.getFirstElement() / ias2.getFirstElement());
-									}
-									
-									if ((ias1.getFirstElement() == Double.POSITIVE_INFINITY && ias2.getLastElement() == Double.POSITIVE_INFINITY)
-									    || (ias1.getFirstElement() == Double.NEGATIVE_INFINITY && ias2.getLastElement() == Double.NEGATIVE_INFINITY))
-									{
-									    f1l2 = 1;
-									} else if ((ias1.getFirstElement() == Double.NEGATIVE_INFINITY && ias2.getLastElement() == Double.POSITIVE_INFINITY)
-									        || (ias1.getFirstElement() == Double.POSITIVE_INFINITY && ias2.getLastElement() == Double.NEGATIVE_INFINITY))
-									{
-									    f1l2 = -1;
-									} else if (ias1.getFirstElement() == 0.0
-									        || ias2.getLastElement() == Double.POSITIVE_INFINITY
-									        || ias2.getLastElement() == Double.NEGATIVE_INFINITY)
-									{
-									    f1l2 = 0;
-									} else if (ias1.getFirstElement() == Double.NEGATIVE_INFINITY)
-									{
-									    f1l2 = Double.NEGATIVE_INFINITY;
-									} else if (ias1.getFirstElement() == Double.POSITIVE_INFINITY)
-									{
-									    f1l2 = Double.POSITIVE_INFINITY;
-									} else if (ias1.getFirstElement() / ias2.getLastElement() < min){
-									    f1l2 = Double.NEGATIVE_INFINITY;
-									} else if (ias1.getFirstElement() / ias2.getLastElement() > max){
-									    f1l2 = Double.POSITIVE_INFINITY;
-									} else {
-									    f1l2 = (int) (ias1.getFirstElement() / ias2.getLastElement());
-									}
-									
-									if ((ias1.getLastElement() == Double.POSITIVE_INFINITY && ias2.getFirstElement() == Double.POSITIVE_INFINITY)
-									    || (ias1.getLastElement() == Double.NEGATIVE_INFINITY && ias2.getFirstElement() == Double.NEGATIVE_INFINITY))
-									{
-									    f2l1 = 1;
-									} else if ((ias1.getLastElement() == Double.NEGATIVE_INFINITY && ias2.getFirstElement() == Double.POSITIVE_INFINITY)
-									        || (ias1.getLastElement() == Double.POSITIVE_INFINITY && ias2.getFirstElement() == Double.NEGATIVE_INFINITY))
-									{
-									    f2l1 = -1;
-									} else if (ias1.getLastElement() == 0.0
-									        || ias2.getFirstElement() == Double.POSITIVE_INFINITY
-									        || ias2.getFirstElement() == Double.NEGATIVE_INFINITY)
-									{
-									    f2l1 = 0;
-									} else if (ias1.getLastElement() == Double.NEGATIVE_INFINITY)
-									{
-									    f2l1 = Double.NEGATIVE_INFINITY;
-									} else if (ias1.getLastElement() == Double.POSITIVE_INFINITY)
-									{
-									    f2l1 = Double.POSITIVE_INFINITY;
-									} else if (ias1.getLastElement() / ias2.getFirstElement() < min){
-									    f2l1 = Double.NEGATIVE_INFINITY;
-									} else if (ias1.getLastElement() / ias2.getFirstElement() > max){
-									    f2l1 = Double.POSITIVE_INFINITY;
-									} else {
-									    f2l1 = (int) (ias1.getLastElement() / ias2.getFirstElement());
-									}
-									
-									if ((ias1.getLastElement() == Double.POSITIVE_INFINITY && ias2.getLastElement() == Double.POSITIVE_INFINITY)
-									    || (ias1.getLastElement() == Double.NEGATIVE_INFINITY && ias2.getLastElement() == Double.NEGATIVE_INFINITY))
-									{
-									    f2l2 = 1;
-									} else if ((ias1.getLastElement() == Double.NEGATIVE_INFINITY && ias2.getLastElement() == Double.POSITIVE_INFINITY)
-									        || (ias1.getLastElement() == Double.POSITIVE_INFINITY && ias2.getLastElement() == Double.NEGATIVE_INFINITY))
-									{
-									    f2l2 = -1;
-									} else if (ias1.getLastElement() == 0.0
-									        || ias2.getLastElement() == Double.POSITIVE_INFINITY
-									        || ias2.getLastElement() == Double.NEGATIVE_INFINITY)
-									{
-									    f2l2 = 0;
-									} else if (ias1.getLastElement() == Double.NEGATIVE_INFINITY)
-									{
-									    f2l2 = Double.NEGATIVE_INFINITY;
-									} else if (ias1.getLastElement() == Double.POSITIVE_INFINITY)
-									{
-									    f2l2 = Double.POSITIVE_INFINITY;
-									} else if (ias1.getLastElement() / ias2.getLastElement() < min){
-									    f2l2 = Double.NEGATIVE_INFINITY;
-									} else if (ias1.getLastElement() / ias2.getLastElement() > max){
-									    f2l2 = Double.POSITIVE_INFINITY;
-									} else {
-									    f2l2 = (int) (ias1.getLastElement() / ias2.getLastElement());
-									}
-									
-									ias.setFirstElement(Math.min( Math.min(f2l1, f2l2), Math.min(f1l1, f1l2) ));
-									ias.setLastElement(Math.max( Math.max(f2l1, f2l2), Math.max(f1l1, f1l2) ));
+								if (dos2.isZero()){
+									DetectionOfSigns dos = new DetectionOfSigns(v.getName(),false,false,false);
+									gen.add(dos);
+									result = result.addition(gen);
+									gen.clear();
+									break;
 								}
-								
-								
-								
-								gen.add(ias);
-								result = result.addition(gen);
-								gen.clear();
-								break;
+								else{	
+									DetectionOfSigns dos = new DetectionOfSigns(v.getName(),
+											((dos1.isPlus()&&dos2.isPlus()))||(dos1.isMinus()&&dos2.isMinus())
+											,((dos1.isPlus()&&dos2.isMinus())||(dos1.isMinus()&&dos2.isPlus())),
+											(dos1.isZero()));
+									gen.add(dos);
+									result = result.addition(gen);
+									gen.clear();
+									break;
+								}
 							}
+							
 						}
+						
 					}
+
 				}
 			}		
 		}
@@ -752,10 +492,6 @@ public class FlowGraph {
 
 		return result;
 	}
-	
-	
-	
-	
 	
 	
 	private void calculateDetectionOfSigns(){

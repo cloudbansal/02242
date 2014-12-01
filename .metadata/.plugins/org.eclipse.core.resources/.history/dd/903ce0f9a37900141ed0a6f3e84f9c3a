@@ -12,11 +12,8 @@ public class IntervalAnalysis {
 		this.lastElement = lastElement;
 	}
 	
-	public IntervalAnalysis(IntervalAnalysis ias) {
+	public IntervalAnalysis(IntervalAnalysis byVariableName) {
 		super();
-		this.name = ias.name;
-		this.firstElement = ias.firstElement;
-		this.lastElement = ias.lastElement;
 	}
 
 	public String getName() {

@@ -89,7 +89,7 @@ public class IntervalAnalysisSet extends ArrayList<IntervalAnalysis> {
 	}
 	
 	
-	public IntervalAnalysis getByVariableName(String name){
+	public IntervalAnalysis getByName(String name){
 		for(IntervalAnalysis ia : this){
 			if(ia.getName().equals(name)){
 				return ia;
@@ -98,12 +98,4 @@ public class IntervalAnalysisSet extends ArrayList<IntervalAnalysis> {
 		return null;
 	}
 	
-	public boolean containsVariableName(String name){
-		for(IntervalAnalysis ia : this) {
-			if(ia.getName().equals(name)){
-				return true;
-			}
-		}
-		return false;
-	}	
 }

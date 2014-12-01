@@ -678,60 +678,6 @@ public class FlowGraph {
 									    f1l2 = (int) (ias1.getFirstElement() / ias2.getLastElement());
 									}
 									
-									if ((ias1.getLastElement() == Double.POSITIVE_INFINITY && ias2.getFirstElement() == Double.POSITIVE_INFINITY)
-									    || (ias1.getLastElement() == Double.NEGATIVE_INFINITY && ias2.getFirstElement() == Double.NEGATIVE_INFINITY))
-									{
-									    f2l1 = 1;
-									} else if ((ias1.getLastElement() == Double.NEGATIVE_INFINITY && ias2.getFirstElement() == Double.POSITIVE_INFINITY)
-									        || (ias1.getLastElement() == Double.POSITIVE_INFINITY && ias2.getFirstElement() == Double.NEGATIVE_INFINITY))
-									{
-									    f2l1 = -1;
-									} else if (ias1.getLastElement() == 0.0
-									        || ias2.getFirstElement() == Double.POSITIVE_INFINITY
-									        || ias2.getFirstElement() == Double.NEGATIVE_INFINITY)
-									{
-									    f2l1 = 0;
-									} else if (ias1.getLastElement() == Double.NEGATIVE_INFINITY)
-									{
-									    f2l1 = Double.NEGATIVE_INFINITY;
-									} else if (ias1.getLastElement() == Double.POSITIVE_INFINITY)
-									{
-									    f2l1 = Double.POSITIVE_INFINITY;
-									} else if (ias1.getLastElement() / ias2.getFirstElement() < min){
-									    f2l1 = Double.NEGATIVE_INFINITY;
-									} else if (ias1.getLastElement() / ias2.getFirstElement() > max){
-									    f2l1 = Double.POSITIVE_INFINITY;
-									} else {
-									    f2l1 = (int) (ias1.getLastElement() / ias2.getFirstElement());
-									}
-									
-									if ((ias1.getLastElement() == Double.POSITIVE_INFINITY && ias2.getLastElement() == Double.POSITIVE_INFINITY)
-									    || (ias1.getLastElement() == Double.NEGATIVE_INFINITY && ias2.getLastElement() == Double.NEGATIVE_INFINITY))
-									{
-									    f2l2 = 1;
-									} else if ((ias1.getLastElement() == Double.NEGATIVE_INFINITY && ias2.getLastElement() == Double.POSITIVE_INFINITY)
-									        || (ias1.getLastElement() == Double.POSITIVE_INFINITY && ias2.getLastElement() == Double.NEGATIVE_INFINITY))
-									{
-									    f2l2 = -1;
-									} else if (ias1.getLastElement() == 0.0
-									        || ias2.getLastElement() == Double.POSITIVE_INFINITY
-									        || ias2.getLastElement() == Double.NEGATIVE_INFINITY)
-									{
-									    f2l2 = 0;
-									} else if (ias1.getLastElement() == Double.NEGATIVE_INFINITY)
-									{
-									    f2l2 = Double.NEGATIVE_INFINITY;
-									} else if (ias1.getLastElement() == Double.POSITIVE_INFINITY)
-									{
-									    f2l2 = Double.POSITIVE_INFINITY;
-									} else if (ias1.getLastElement() / ias2.getLastElement() < min){
-									    f2l2 = Double.NEGATIVE_INFINITY;
-									} else if (ias1.getLastElement() / ias2.getLastElement() > max){
-									    f2l2 = Double.POSITIVE_INFINITY;
-									} else {
-									    f2l2 = (int) (ias1.getLastElement() / ias2.getLastElement());
-									}
-									
 									ias.setFirstElement(Math.min( Math.min(f2l1, f2l2), Math.min(f1l1, f1l2) ));
 									ias.setLastElement(Math.max( Math.max(f2l1, f2l2), Math.max(f1l1, f1l2) ));
 								}

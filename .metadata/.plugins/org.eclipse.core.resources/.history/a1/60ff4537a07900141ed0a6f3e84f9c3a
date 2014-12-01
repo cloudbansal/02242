@@ -12,13 +12,6 @@ public class IntervalAnalysis {
 		this.lastElement = lastElement;
 	}
 	
-	public IntervalAnalysis(IntervalAnalysis ias) {
-		super();
-		this.name = ias.name;
-		this.firstElement = ias.firstElement;
-		this.lastElement = ias.lastElement;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -55,37 +48,17 @@ public class IntervalAnalysis {
 		if(ia.getName().equals(this.name)){
 			if(this.firstElement == Double.NaN || this.lastElement == Double.NaN){
 				this.firstElement = ia.getFirstElement();
-				this.lastElement  = ia.getLastElement();
+				this.lastElement = ia.getLastElement();
 			} else if (ia.firstElement != Double.NaN && ia.lastElement != Double.NaN){
 				this.firstElement  = Math.min(this.firstElement, ia.getFirstElement());
-				this.lastElement   = Math.max(this.lastElement, ia.getLastElement());
+				this.lastElement = Math.max(this.lastElement, ia.getLastElement());
 			}
 		}
 	}
 	
 	public void substract(IntervalAnalysis ia){
 		if(ia.getName().equals(this.name)){
-			if(this.firstElement == Double.NaN || this.lastElement == Double.NaN){
-				return;
-			} else if (ia.firstElement != Double.NaN && ia.lastElement != Double.NaN){
-				if(ia.firstElement <= this.firstElement && ia.lastElement >= this.lastElement){
-					this.firstElement = Double.NaN;
-					this.lastElement  = Double.NaN;
-				} else if(ia.firstElement <= this.firstElement && ia.lastElement < this.lastElement){
-					if(ia.lastElement >= this.firstElement){
-						this.firstElement = Double.NEGATIVE_INFINITY;
-						this.lastElement  = ia.firstElement - 1;
-					} 
-				} else if(ia.firstElement > this.firstElement && ia.lastElement > this.lastElement){
-					if(ia.firstElement < this.lastElement){
-						this.firstElement = ia.lastElement + 1;
-						this.lastElement  = Double.POSITIVE_INFINITY;
-					}
-				} else {
-					this.firstElement  = Math.max(this.firstElement, ia.getFirstElement());
-					this.lastElement   = Math.min(this.lastElement, ia.getLastElement());
-				}
-			}
+			
 		}
 	}
 	
