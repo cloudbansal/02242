@@ -19,11 +19,11 @@ public class DetectionOfSignsSet extends ArrayList<DetectionOfSigns>{
 
 	public DetectionOfSignsSet addition(DetectionOfSignsSet detectionOfSignsSet){
 		DetectionOfSignsSet newDetectionOfSignsSet = new DetectionOfSignsSet(this);
-		
 		for(DetectionOfSigns ds : detectionOfSignsSet) {
 			if(newDetectionOfSignsSet.containsVariableName(ds.getName())){
 				newDetectionOfSignsSet.getByVariableName(ds.getName()).add(ds);
 			} else {
+				
 				newDetectionOfSignsSet.add(ds);
 			}
 		}
@@ -36,11 +36,12 @@ public class DetectionOfSignsSet extends ArrayList<DetectionOfSigns>{
 		
 		for(DetectionOfSigns ds : detectionOfSignsSet) {
 			if(newDetectionOfSignsSet.containsVariableName(ds.getName())){
+				
 				DetectionOfSigns temp = newDetectionOfSignsSet.getByVariableName(ds.getName());
 				temp.substract(ds);
-//				if(!(temp.isMinus() || temp.isPlus() || temp.isZero())){
-//					newDetectionOfSignsSet.remove(newDetectionOfSignsSet.getByVariableName(ds.getName()));
-//				}
+				if(!(temp.isMinus() || temp.isPlus() || temp.isZero())){
+					newDetectionOfSignsSet.remove(newDetectionOfSignsSet.getByVariableName(ds.getName()));
+				}
 			} 
 		}
 		

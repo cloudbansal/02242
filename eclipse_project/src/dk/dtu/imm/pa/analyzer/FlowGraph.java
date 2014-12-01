@@ -273,17 +273,11 @@ public class FlowGraph {
 					if(numberOfElements == 1){
 						String nameOfVariable = labelElements.get(i).getText();
 						DetectionOfSigns dos = l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable);
-						System.out.println("Entry"+l.getLineNumber()+": "+l.getEntryDetectionOfSigns());
-						dos.setName(v.getName());
-						System.out.println("Entry"+l.getLineNumber()+": "+l.getEntryDetectionOfSigns());
-						gen.add(dos);
+						gen.add(new DetectionOfSigns(v.getName(),dos.isPlus(),dos.isMinus(),dos.isZero()));
 					}else if(numberOfElements == 2){
 						String nameOfVariable = labelElements.get(i+1).getText();
 						DetectionOfSigns dos = l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable);
-						dos.setPlus(!dos.isPlus());
-						dos.setMinus(!dos.isMinus());
-						dos.setName(v.getName());
-						gen.add(dos);
+						gen.add(new DetectionOfSigns(v.getName(),!dos.isPlus(),!dos.isMinus(),dos.isZero()));
 					}else if(numberOfElements == 3){
 						DetectionOfSigns dos1 = new DetectionOfSigns(v.getName(), false,false,false);
 						DetectionOfSigns dos2 = new DetectionOfSigns(v.getName(), false,false,false);

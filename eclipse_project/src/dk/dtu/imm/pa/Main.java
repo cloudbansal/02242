@@ -52,7 +52,7 @@ public class Main {
 	    System.out.println("Detection of Sign set, per label:");
 	    for(CodeLine cl : program){
 	    	System.out.println(cl);
-	    	System.out.println("entry: " + cl.getEntryDetectionOfSigns() + " - exit: " + cl.getExitDetectionOfSigns());
+	    	System.out.println("entry: " + cl.getEntryDetectionOfSigns() + " \n exit: " + cl.getExitDetectionOfSigns());
 	    	System.out.println();
 	    	System.out.println();
 	    }
