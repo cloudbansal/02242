@@ -281,257 +281,57 @@ public class FlowGraph {
 				break;
 			}
 			case TheLangLexer.NEQ: {
-				var1plus  = firstOperatingDos.isPlus();
-				var1minus = firstOperatingDos.isMinus();
-				var1zero  = firstOperatingDos.isZero() && (secondOperatingDos.isMinus() || secondOperatingDos.isPlus());
-				
-				var2plus  = secondOperatingDos.isPlus(); 
-				var2minus = secondOperatingDos.isMinus();
-				var2zero  = secondOperatingDos.isZero() && (firstOperatingDos.isMinus() || firstOperatingDos.isPlus());			
+				var1plus  = false;
+				var1minus = false;
+				var1zero  = false;
+				var2plus  = false; 
+				var2minus = false;
+				var2zero  = false;			
 				break;
 			}
 			case TheLangLexer.GT: {
-				var1plus  = firstOperatingDos.isPlus();
-				var1minus = firstOperatingDos.isMinus() && secondOperatingDos.isMinus();
-				var1zero  = firstOperatingDos.isZero() && secondOperatingDos.isMinus();
-				
-				var2plus  = firstOperatingDos.isPlus() && secondOperatingDos.isPlus(); 
-				var2minus = secondOperatingDos.isMinus();
-				var2zero  = firstOperatingDos.isPlus() && secondOperatingDos.isZero();
+				var1plus  = false;
+				var1minus = false;
+				var1zero  = false;
+				var2plus  = false; 
+				var2minus = false;
+				var2zero  = false;
 				break;
 			}
 			case TheLangLexer.GE: {
-				var1plus  = firstOperatingDos.isPlus();
-				var1minus = firstOperatingDos.isMinus() && secondOperatingDos.isMinus();
-				var1zero  = firstOperatingDos.isZero() && (secondOperatingDos.isPlus() || secondOperatingDos.isZero());
-				
-				var2plus  = secondOperatingDos.isPlus() && firstOperatingDos.isPlus(); 
-				var2minus = secondOperatingDos.isMinus();
-				var2zero  = (firstOperatingDos.isPlus() || firstOperatingDos.isZero()) && secondOperatingDos.isZero();
+				var1plus  = false;
+				var1minus = false;
+				var1zero  = false;
+				var2plus  = false; 
+				var2minus = false;
+				var2zero  = false;
 				break;
 			}
 			case TheLangLexer.LT: {
-				var1plus  = firstOperatingDos.isPlus() && secondOperatingDos.isPlus();
-				var1minus = firstOperatingDos.isMinus();
-				var1zero  = firstOperatingDos.isZero() && secondOperatingDos.isPlus();
-				
-				var2plus  = secondOperatingDos.isPlus(); 
-				var2minus = secondOperatingDos.isMinus() && firstOperatingDos.isMinus();
-				var2zero  = firstOperatingDos.isMinus() && secondOperatingDos.isZero();
+				var1plus  = false;
+				var1minus = false;
+				var1zero  = false;
+				var2plus  = false; 
+				var2minus = false;
+				var2zero  = false;
 				break;
 			}
 			case TheLangLexer.LE: {
-				var1plus  = secondOperatingDos.isPlus() && firstOperatingDos.isPlus();;
-				var1minus = firstOperatingDos.isMinus();
-				var1zero  = firstOperatingDos.isZero() && (secondOperatingDos.isPlus() || secondOperatingDos.isZero());
-				
-				var2plus  = secondOperatingDos.isPlus(); 
-				var2minus = firstOperatingDos.isMinus() && secondOperatingDos.isMinus();
-				var2zero  = secondOperatingDos.isZero() && (firstOperatingDos.isMinus() || firstOperatingDos.isZero());
+				var1plus  = false;
+				var1minus = false;
+				var1zero  = false;
+				var2plus  = false; 
+				var2minus = false;
+				var2zero  = false;
 				break;
 			}
-		}
-		
-		firstOperatingDos  = new DetectionOfSigns(firstOperatingDos.getName(),  var1plus, var1minus, var1zero);
-		secondOperatingDos = new DetectionOfSigns(secondOperatingDos.getName(), var2plus, var2minus, var2zero);
-		
-		DetectionOfSignsSet kill = new DetectionOfSignsSet();
-		DetectionOfSignsSet gen  = new DetectionOfSignsSet();
-		
-		// First variable
-		if(be.isFirstVariableIsNumber()){
-			kill.add(new DetectionOfSigns(secondOperatingDos.getName(), true, true, true));
-			result = result.removal(kill);
-			kill.clear();
-			
-			gen.add(secondOperatingDos);
-			result = result.addition(gen);
-			gen.clear();
-		} else if(be.isSecondVariableIsNumber()){
-			kill.add(new DetectionOfSigns(firstOperatingDos.getName(), true, true, true));
-			result = result.removal(kill);
-			kill.clear();
-			
-			gen.add(firstOperatingDos);
-			result = result.addition(gen);
-			gen.clear();
-		} else {
-			kill.add(new DetectionOfSigns(firstOperatingDos.getName(), true, true, true));
-			result = result.removal(kill);
-			kill.clear();
-			
-			kill.add(new DetectionOfSigns(secondOperatingDos.getName(), true, true, true));
-			result = result.removal(kill);
-			kill.clear();
-			
-			gen.add(firstOperatingDos);
-			result = result.addition(gen);
-			gen.clear();
-			
-			gen.add(secondOperatingDos);
-			result = result.addition(gen);
-			gen.clear();
 		}
 		
 		return result;
 	}
 	
 	private DetectionOfSignsSet getFalseDSfromLabel(CodeLine l){
-		DetectionOfSignsSet result = new DetectionOfSignsSet();
 		
-		DetectionOfSignsSet labelEntryDos = l.getEntryDetectionOfSigns();
-		
-		BooleanExpression be = l.getBooleanExpression();
-		
-		DetectionOfSigns firstOperatingDos  = new DetectionOfSigns("", false, false, false);
-		DetectionOfSigns secondOperatingDos = new DetectionOfSigns("", false, false, false);
-
-		// First variable
-		if(be.isFirstVariableIsNumber()){
-			if(Integer.parseInt(be.getFirstVariable()) == 0){
-				firstOperatingDos = new DetectionOfSigns("", false, false, true);
-			} else if(be.isFirstVariableNegated()){
-				firstOperatingDos = new DetectionOfSigns("", false, true, false);
-			} else {
-				firstOperatingDos = new DetectionOfSigns("", true, false, false);
-			}
-		} else {
-			firstOperatingDos = new DetectionOfSigns(labelEntryDos.getByVariableName(be.getFirstVariable()));
-			if(be.isFirstVariableNegated()){
-				firstOperatingDos = new DetectionOfSigns(be.getFirstVariable(), firstOperatingDos.isMinus(), firstOperatingDos.isPlus(), firstOperatingDos.isZero());
-			} 
-		}
-		
-		// Second variable
-		if(be.isSecondVariableIsNumber()){
-			if(Integer.parseInt(be.getSecondVariable()) == 0){
-				secondOperatingDos = new DetectionOfSigns("", false, false, true);
-			} else if(be.isSecondVariableNegated()){
-				secondOperatingDos = new DetectionOfSigns("", false, true, false);
-			} else {
-				secondOperatingDos = new DetectionOfSigns("", true, false, false);
-			}
-		} else {
-			secondOperatingDos = new DetectionOfSigns(labelEntryDos.getByVariableName(be.getSecondVariable()));
-			if(be.isSecondVariableNegated()){
-				secondOperatingDos = new DetectionOfSigns(be.getSecondVariable(), secondOperatingDos.isMinus(), secondOperatingDos.isPlus(), secondOperatingDos.isZero());
-			} 
-		}
-		
-		boolean var1plus  = firstOperatingDos.isPlus(),
-				var1minus = firstOperatingDos.isMinus(),
-				var1zero  = firstOperatingDos.isZero(),
-				
-				var2plus  = secondOperatingDos.isPlus(), 
-				var2minus = secondOperatingDos.isMinus(),
-				var2zero  = secondOperatingDos.isZero();
-		
-		
-		switch(be.getOperator()){
-			case TheLangLexer.EQ: {
-				var1plus  = firstOperatingDos.isPlus() && secondOperatingDos.isPlus();
-				var1minus = firstOperatingDos.isMinus() && secondOperatingDos.isMinus(); 
-				var1zero  = firstOperatingDos.isMinus() && secondOperatingDos.isZero();
-				
-				var2plus  = firstOperatingDos.isPlus() && secondOperatingDos.isPlus(); 
-				var2minus = firstOperatingDos.isMinus() && secondOperatingDos.isMinus(); 
-				var2zero  = firstOperatingDos.isMinus() && secondOperatingDos.isZero();
-				break;
-			}
-			case TheLangLexer.NEQ: {
-				var1plus  = firstOperatingDos.isPlus();
-				var1minus = firstOperatingDos.isMinus();
-				var1zero  = firstOperatingDos.isZero() && (secondOperatingDos.isMinus() || secondOperatingDos.isPlus());
-				
-				var2plus  = secondOperatingDos.isPlus(); 
-				var2minus = secondOperatingDos.isMinus();
-				var2zero  = secondOperatingDos.isZero() && (firstOperatingDos.isMinus() || firstOperatingDos.isPlus());			
-				break;
-			}
-			case TheLangLexer.GT: {
-				var1plus  = firstOperatingDos.isPlus();
-				var1minus = firstOperatingDos.isMinus() && secondOperatingDos.isMinus();
-				var1zero  = firstOperatingDos.isZero() && secondOperatingDos.isMinus();
-				
-				var2plus  = firstOperatingDos.isPlus() && secondOperatingDos.isPlus(); 
-				var2minus = secondOperatingDos.isMinus();
-				var2zero  = firstOperatingDos.isPlus() && secondOperatingDos.isZero();
-				break;
-			}
-			case TheLangLexer.GE: {
-				var1plus  = firstOperatingDos.isPlus();
-				var1minus = firstOperatingDos.isMinus() && secondOperatingDos.isMinus();
-				var1zero  = firstOperatingDos.isZero() && (secondOperatingDos.isPlus() || secondOperatingDos.isZero());
-				
-				var2plus  = secondOperatingDos.isPlus() && firstOperatingDos.isPlus(); 
-				var2minus = secondOperatingDos.isMinus();
-				var2zero  = (firstOperatingDos.isPlus() || firstOperatingDos.isZero()) && secondOperatingDos.isZero();
-				break;
-			}
-			case TheLangLexer.LT: {
-				var1plus  = firstOperatingDos.isPlus() && secondOperatingDos.isPlus();
-				var1minus = firstOperatingDos.isMinus();
-				var1zero  = firstOperatingDos.isZero() && secondOperatingDos.isPlus();
-				
-				var2plus  = secondOperatingDos.isPlus(); 
-				var2minus = secondOperatingDos.isMinus() && firstOperatingDos.isMinus();
-				var2zero  = firstOperatingDos.isMinus() && secondOperatingDos.isZero();
-				break;
-			}
-			case TheLangLexer.LE: {
-				var1plus  = secondOperatingDos.isPlus() && firstOperatingDos.isPlus();;
-				var1minus = firstOperatingDos.isMinus();
-				var1zero  = firstOperatingDos.isZero() && (secondOperatingDos.isPlus() || secondOperatingDos.isZero());
-				
-				var2plus  = secondOperatingDos.isPlus(); 
-				var2minus = firstOperatingDos.isMinus() && secondOperatingDos.isMinus();
-				var2zero  = secondOperatingDos.isZero() && (firstOperatingDos.isMinus() || firstOperatingDos.isZero());
-				break;
-			}
-		}
-		
-		firstOperatingDos  = new DetectionOfSigns(firstOperatingDos.getName(),  var1plus, var1minus, var1zero);
-		secondOperatingDos = new DetectionOfSigns(secondOperatingDos.getName(), var2plus, var2minus, var2zero);
-		
-		DetectionOfSignsSet kill = new DetectionOfSignsSet();
-		DetectionOfSignsSet gen  = new DetectionOfSignsSet();
-		
-		// First variable
-		if(be.isFirstVariableIsNumber()){
-			kill.add(new DetectionOfSigns(secondOperatingDos.getName(), true, true, true));
-			result = result.removal(kill);
-			kill.clear();
-			
-			gen.add(secondOperatingDos);
-			result = result.addition(gen);
-			gen.clear();
-		} else if(be.isSecondVariableIsNumber()){
-			kill.add(new DetectionOfSigns(firstOperatingDos.getName(), true, true, true));
-			result = result.removal(kill);
-			kill.clear();
-			
-			gen.add(firstOperatingDos);
-			result = result.addition(gen);
-			gen.clear();
-		} else {
-			kill.add(new DetectionOfSigns(firstOperatingDos.getName(), true, true, true));
-			result = result.removal(kill);
-			kill.clear();
-			
-			kill.add(new DetectionOfSigns(secondOperatingDos.getName(), true, true, true));
-			result = result.removal(kill);
-			kill.clear();
-			
-			gen.add(firstOperatingDos);
-			result = result.addition(gen);
-			gen.clear();
-			
-			gen.add(secondOperatingDos);
-			result = result.addition(gen);
-			gen.clear();
-		}
-		
-		return result;
 	}
 
 	private DetectionOfSignsSet getDSfromLabel(CodeLine l){

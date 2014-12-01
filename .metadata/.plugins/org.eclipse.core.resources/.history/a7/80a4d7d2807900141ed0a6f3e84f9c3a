@@ -377,7 +377,7 @@ public class FlowGraph {
 	}
 	
 	private DetectionOfSignsSet getFalseDSfromLabel(CodeLine l){
-		DetectionOfSignsSet result = new DetectionOfSignsSet();
+DetectionOfSignsSet result = new DetectionOfSignsSet();
 		
 		DetectionOfSignsSet labelEntryDos = l.getEntryDetectionOfSigns();
 		
