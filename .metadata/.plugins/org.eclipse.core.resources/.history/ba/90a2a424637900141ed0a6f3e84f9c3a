@@ -13,14 +13,6 @@ public class DetectionOfSigns {
 		this.minus = minus;
 		this.zero = zero;
 	}
-	
-	public DetectionOfSigns(DetectionOfSigns ds){
-		super();
-		this.name = ds.getName();
-		this.plus = ds.isPlus();
-		this.minus = ds.isMinus();
-		this.zero = ds.isZero();
-	}
 
 	public String getName() {
 		return name;

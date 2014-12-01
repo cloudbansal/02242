@@ -63,7 +63,7 @@ public class DetectionOfSignsSet extends ArrayList<DetectionOfSigns>{
 	public DetectionOfSigns getByVariableName(String name){
 		for(DetectionOfSigns ds : this){
 			if(ds.getName().equals(name)){
-				return new DetectionOfSigns(ds);
+				return ds.clone();
 			}
 		}
 		return null;
