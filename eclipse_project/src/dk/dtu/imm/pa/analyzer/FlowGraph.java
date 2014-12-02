@@ -37,7 +37,7 @@ public class FlowGraph {
 	
 		//this.calculateBufferOverflow("DS");
 		
-		this.calculateBufferOverflow("IA");
+		//this.calculateBufferOverflow("IA");
 				
 //		this.calculateDetectionOfSigns();
 		
@@ -175,7 +175,7 @@ public class FlowGraph {
 													&& ia.getLastElement() <= max
 													&& ia.getLastElement() >= min;
 											
-											if(isValid){
+											if(!isValid){
 												result.add(l);
 											}
 										}
@@ -189,12 +189,17 @@ public class FlowGraph {
 		}
 				
 		for(CodeLine l: result){
-			System.out.println("!! Buffer overflow found at line " + l.getLineNumber());
-			System.out.println(" |- Corresponding program slice is: ");
+			System.out.println("----------------------------------------------------------------");	
+			System.out.println("Buffer overflow found at line: " + l.getLineNumber());
+			System.out.println("Corresponding program slice is: ");
+			System.out.println("----------------------------------------------------------------");
 			for(CodeLine slice: calculateProgramSlice(l)){
 				System.out.println(slice);
+				System.out.println();
 			}
-			
+			System.out.println("----------------------------------------------------------------");	
+			System.out.println();
+			System.out.println();
 		}
 	}
 	
@@ -323,15 +328,15 @@ public class FlowGraph {
 				}
 			}
 		}
-		
 		while(!worklist.isEmpty()){
+			//System.out.println(worklist);			
 			Edge e = worklist.remove(0); // pop!
 			CodeLine label1 = e.getSource();
 			CodeLine label2 = e.getDestination();
 			
 			label1.setExitIntervalAnalysis(getIAfromLabel(label1, min, max));
-			
 			if( ! label2.getEntryIntervalAnalysis().contains(label1.getExitIntervalAnalysis())){
+				
 				label2.setEntryIntervalAnalysis(label2.getEntryIntervalAnalysis().addition(label1.getExitIntervalAnalysis()));
 				for(Edge f : this.programFlow){
 					if(f.getSource().equals(label2)){
@@ -427,11 +432,15 @@ public class FlowGraph {
 					}
 					
 					if(numberOfElements == 1){
-						String nameOfVariable = labelElements.get(i).getText();
-						IntervalAnalysis ias = new IntervalAnalysis(l.getEntryIntervalAnalysis().getByVariableName(nameOfVariable));
-						gen.add(new IntervalAnalysis(v.getName(),ias.getFirstElement(),ias.getLastElement()));
-						result = result.addition(gen);
-						gen.clear();
+						try {
+							Integer.parseInt(labelElements.get(i).getText());
+						} catch (NumberFormatException e) {
+							String nameOfVariable = labelElements.get(i).getText();
+							IntervalAnalysis ias = new IntervalAnalysis(l.getEntryIntervalAnalysis().getByVariableName(nameOfVariable));
+							gen.add(new IntervalAnalysis(v.getName(),ias.getFirstElement(),ias.getLastElement()));
+							result = result.addition(gen);
+							gen.clear();
+						}
 					}else if(numberOfElements == 2){
 						String nameOfVariable = labelElements.get(i+1).getText();
 						IntervalAnalysis ias = new IntervalAnalysis(l.getEntryIntervalAnalysis().getByVariableName(nameOfVariable));
@@ -1219,11 +1228,15 @@ public class FlowGraph {
 					}
 					
 					if(numberOfElements == 1){
-						String nameOfVariable = labelElements.get(i).getText();
-						DetectionOfSigns dos = new DetectionOfSigns(l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable));
-						gen.add(new DetectionOfSigns(v.getName(),dos.isPlus(),dos.isMinus(),dos.isZero()));
-						result = result.addition(gen);
-						gen.clear();
+						try {
+							Integer.parseInt(labelElements.get(i).getText());
+						} catch (NumberFormatException e) {
+							String nameOfVariable = labelElements.get(i).getText();
+							DetectionOfSigns dos = new DetectionOfSigns(l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable));
+							gen.add(new DetectionOfSigns(v.getName(),dos.isPlus(),dos.isMinus(),dos.isZero()));
+							result = result.addition(gen);
+							gen.clear();
+						}
 					}else if(numberOfElements == 2){
 						String nameOfVariable = labelElements.get(i+1).getText();
 						DetectionOfSigns dos = new DetectionOfSigns(l.getEntryDetectionOfSigns().getByVariableName(nameOfVariable));

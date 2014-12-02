@@ -14,9 +14,9 @@ public class IntervalAnalysis {
 	
 	public IntervalAnalysis(IntervalAnalysis ias) {
 		super();
-		this.name = ias.name;
-		this.firstElement = ias.firstElement;
-		this.lastElement = ias.lastElement;
+		this.name = ias.getName();
+		this.firstElement = ias.getFirstElement();
+		this.lastElement = ias.getLastElement();
 	}
 
 	public String getName() {
@@ -42,7 +42,11 @@ public class IntervalAnalysis {
 		boolean result = false;
 		
 		if(ia.getName() == this.getName()){
-			if(ia.getFirstElement() >= this.getFirstElement()){
+			if(Double.isNaN(ia.getFirstElement()) || Double.isNaN(ia.getLastElement()))
+			{
+				result = true;
+			}
+			else if(ia.getFirstElement() >= this.getFirstElement()){
 				if(ia.getLastElement() <= this.getLastElement()){
 					result = true;
 				}
@@ -53,10 +57,10 @@ public class IntervalAnalysis {
 	
 	public void add(IntervalAnalysis ia){
 		if(ia.getName().equals(this.name)){
-			if(this.firstElement == Double.NaN || this.lastElement == Double.NaN){
+			if(Double.isNaN(this.firstElement) || Double.isNaN(this.lastElement)){
 				this.firstElement = ia.getFirstElement();
 				this.lastElement  = ia.getLastElement();
-			} else if (ia.firstElement != Double.NaN && ia.lastElement != Double.NaN){
+			} else if ( !Double.isNaN(ia.firstElement) &&  !Double.isNaN(ia.lastElement)){
 				this.firstElement  = Math.min(this.firstElement, ia.getFirstElement());
 				this.lastElement   = Math.max(this.lastElement, ia.getLastElement());
 			}
@@ -65,9 +69,9 @@ public class IntervalAnalysis {
 	
 	public void substract(IntervalAnalysis ia){
 		if(ia.getName().equals(this.name)){
-			if(this.firstElement == Double.NaN || this.lastElement == Double.NaN){
+			if( Double.isNaN(this.firstElement) || Double.isNaN( this.lastElement)){
 				return;
-			} else if (ia.firstElement != Double.NaN && ia.lastElement != Double.NaN){
+			} else if ( !Double.isNaN(ia.firstElement) &&  !Double.isNaN(ia.lastElement)){
 				if(ia.firstElement <= this.firstElement && ia.lastElement >= this.lastElement){
 					this.firstElement = Double.NaN;
 					this.lastElement  = Double.NaN;
@@ -89,4 +93,9 @@ public class IntervalAnalysis {
 		}
 	}
 	
+	public String toString(){
+		return("("+this.name+", ["+this.firstElement+","+this.lastElement+"])");
+	}
+	
 }
+

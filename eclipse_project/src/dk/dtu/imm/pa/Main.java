@@ -42,14 +42,9 @@ public class Main {
 	    System.out.println("Program flow:");
 	    System.out.println(fg.getProgramFlow());
 	    System.out.println();
-	    System.out.println("Reaching definitions set, per label:");
-	    for(CodeLine cl : program){
-	    	System.out.println(cl);
-	    	System.out.println("entry: " + cl.getEntryReachingDefinitions() + " - exit: " + cl.getExitReachingDefinitions());
-	    	System.out.println();
-	    	System.out.println();
-	    }
 	    
+	    fg.calculateBufferOverflow("IA");
+	    fg.calculateBufferOverflow("DS");
 
 	} catch (IOException e) {
 		System.err.println("Error trying to parse source file (" + srcFile + "):");
