@@ -113,7 +113,6 @@ public class CodeLine {
         			Variable newArrayVariable = new Variable(this.getLineNumber(), this.elements.get(this.elements.size() - 3).getText());
         			newArrayVariable.setArray(true);
         			newArrayVariable.setArrayLength(Integer.parseInt(element.getText()));
-        			System.out.println(newArrayVariable);
         			
         			this.globalVariables.remove(this.globalVariables.findByName(this.elements.get(this.elements.size() - 3).getText()));
         			this.globalVariables.add(newArrayVariable);
@@ -251,7 +250,7 @@ public class CodeLine {
             }
         }
         
-        System.out.println("Added element on line " + element.getLine() + ": " + element.getText() + " {type " + element.getType() + "}");
+        //System.out.println("Added element on line " + element.getLine() + ": " + element.getText() + " {type " + element.getType() + "}");
     }
     
     public VariableStore getModifiedVariables() {
